@@ -1,0 +1,33 @@
+# The following code snippet serves as downloader for the data. Before it can be used python3, pip, nano and the
+# python-library boto3 had to be installed.
+
+import boto3
+
+s3 = boto3.client('s3', aws_access_key_id='<key_id>', aws_secret_access_key='<token>')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_01.zip','./data/class_01.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_02.zip','./data/class_02.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_03.zip','./data/class_03.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_04.zip','./data/class_04.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_05.zip','./data/class_05.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_06.zip','./data/class_06.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_07.zip','./data/class_07.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_08.zip','./data/class_08.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_09.zip','./data/class_09.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_10.zip','./data/class_10.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_11.zip','./data/class_11.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_12.zip','./data/class_12.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_13.zip','./data/class_13.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_14.zip','./data/class_14.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_15.zip','./data/class_15.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_16.zip','./data/class_16.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_17.zip','./data/class_17.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_18.zip','./data/class_18.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_19.zip','./data/class_19.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_20.zip','./data/class_20.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_21.zip','./data/class_21.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_22.zip','./data/class_22.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_23.zip','./data/class_23.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_24.zip','./data/class_24.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_25.zip','./data/class_25.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_26.zip','./data/class_26.zip')
+s3.download_file('ieee-dataport', 'data/8339/HGD_VideoFrames_class_27.zip','./data/class_27.zip')

@@ -1,0 +1,29 @@
+## This file is the configuration file for a kubernetes pod to setup the storage to download the data from the aws-cloud.
+## Inside the pod also the preprocessing is done. The file is based on the File Transfer example of the bht-cluster manual.
+## (https://cl-docs.ris.beuth-hochschule.de/user/datatransfer/)
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tool
+spec:
+  containers:
+  - args:
+    - while true; do sleep 30; done;
+    command:
+    - /bin/bash
+    - -c
+    - --
+    image: debian
+    name: gesturerecon
+    volumeMounts:
+    - mountPath: /cephfs
+      name: fsmount
+  volumes:
+  - flexVolume:
+      driver: ceph.rook.io/rook
+      fsType: ceph
+      options:
+        clusterNamespace: rook-ceph
+        fsName: home
+    name: fsmount
