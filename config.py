@@ -1,5 +1,5 @@
 SOURCE_PATH = '../data'
-TARGET_PATH = './results'
+TARGET_PATH = '../results'
 PLAYGROUND_PATH = './unzipped_data/'
 FINAL_OUTPUT_NAME = 'all_data_preprocessed'
 
