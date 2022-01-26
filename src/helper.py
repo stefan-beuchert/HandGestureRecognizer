@@ -25,7 +25,7 @@ def save_data_to_csv(data, label, target_path):
     compression_opts = dict(method='zip', archive_name=f'{label}.csv')
     df.to_csv(f'{target_path}/{label}.zip', index=False, compression=compression_opts)
 
-    print(f'{label}.csv successfully saved in {target_path}!')
+    print(f'{label}.zip successfully saved in {target_path}!')
 
 
 
