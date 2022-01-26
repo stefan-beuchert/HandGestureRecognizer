@@ -18,7 +18,8 @@ from src.data_grabber import Cursor, get_image_paths
 from src.helper import reset_working_directory, save_data_to_csv
 from src.mediapipe import get_coordinates
 
-if __name__ == '__main__':
+
+def png_to_csv():
     cursor = Cursor(config.SOURCE_PATH, 'zip')
 
     reset_working_directory(config.TARGET_PATH)
@@ -49,5 +50,20 @@ if __name__ == '__main__':
         else:
             cursor.move_to_next_file()
 
-    print('done')
 
+def preprocessing():
+    # load data
+    # delete empty rows
+    # normalize z columns
+
+    pass
+
+
+if __name__ == '__main__':
+    # load raw data, convert images to coordinates, save as csv per class
+    png_to_csv()
+
+    # load class csvs, preprocess and save as single csv over all classes
+
+
+    print('done')
