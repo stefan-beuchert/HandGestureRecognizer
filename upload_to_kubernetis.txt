@@ -1,0 +1,10 @@
+# cmd
+# connect to bht vpn
+kubectl exec -it gesturerecon -- bash
+cd cephfs/stefan_ist_cool/home
+rm -r HandGesturePreProcessor/
+exit
+kubectl cp HandGesturePreProcessor s33580/gesturerecon:cephfs/stefan_ist_cool/home
+kubectl exec -it gesturerecon -- bash
+cd cephfs/stefan_ist_cool/home/HandGesturePreProcessor
+HandGesturePreProcessor/python3 main.py > log.txt
