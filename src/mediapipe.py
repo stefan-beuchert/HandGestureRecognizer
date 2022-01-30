@@ -11,8 +11,9 @@ def get_coordinates(file_paths):
     # the landmarks are a dict with the coordinates (x,y,z) and a list of values for each image
     number_of_images = len(file_paths)
     number_of_landmarks = len(config.ID_TO_LANDMARK)
-    res = [{}] * number_of_landmarks
+    res = [None] * number_of_landmarks
     for landmark_id in range(number_of_landmarks):
+        res[landmark_id] = {}
         res[landmark_id]['x'] = [None] * number_of_images
         res[landmark_id]['y'] = [None] * number_of_images
         res[landmark_id]['z'] = [None] * number_of_images

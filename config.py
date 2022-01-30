@@ -1,5 +1,6 @@
 SOURCE_PATH = '../data'
 TARGET_PATH = '../results'
+TARGET_PATH_GIFS = f'{TARGET_PATH}/gifs'
 PLAYGROUND_PATH = './unzipped_data/'
 FINAL_OUTPUT_NAME = 'all_data_preprocessed'
 
