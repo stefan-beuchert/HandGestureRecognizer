@@ -28,7 +28,7 @@ def save_data_to_csv(data, label, target_path):
 
 
 def create_gif(paths, class_name):
-    paths = [path for path in paths if 'User1_\\User1_1' in path]
+    paths = [path for path in paths if 'User1_1' in path]
     images = []
     for filename in paths:
         images.append(imageio.imread(filename))
