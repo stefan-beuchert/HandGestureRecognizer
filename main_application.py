@@ -4,7 +4,7 @@ import cv2
 import mediapipe as mp
 from sklearn import preprocessing
 
-from src.mediapipe import get_coordinates_for_one_image
+from src.rigging import get_coordinates_for_one_image
 
 def init():
     # load model

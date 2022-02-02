@@ -65,7 +65,7 @@ def get_coordinates_for_one_image(image):
 
         # check if result is valid
         if not results.multi_hand_landmarks:
-            print('no hand detected')
+            #print('no hand detected')
             return None
         elif len(results.multi_hand_landmarks) > 1:
             print('more then one hand detected, not processing the image!')
@@ -80,4 +80,4 @@ def get_coordinates_for_one_image(image):
             list_of_y_coordinates.append(landmark.y)
             list_of_z_coordinates.append(landmark.z)
 
-    return [list_of_x_coordinates, list_of_y_coordinates, list_of_z_coordinates]
+    return (list_of_x_coordinates, list_of_y_coordinates, list_of_z_coordinates)

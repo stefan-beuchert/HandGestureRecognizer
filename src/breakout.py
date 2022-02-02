@@ -23,6 +23,58 @@
 
 import sys, pygame, random
 from joblib import load
+import cv2
+from sklearn import preprocessing
+
+from src.rigging import get_coordinates_for_one_image
+
+"""########## start our code"""
+
+def init():
+    ## initialize model
+    svm = load("models/svm.joblib")
+
+    # open cap
+    cap = cv2.VideoCapture(0)
+
+    return svm, cap
+
+def get_action(model, cap):
+    success, image = cap.read()
+    if not success:
+        print("Ignoring empty camera frame.")
+        # If loading a video, use 'break' instead of 'continue'.
+        return None
+
+    # image to coordinate
+    coords = get_coordinates_for_one_image(image)
+    ## attention -> this one returns tuple of coordinate list for each dimension (x,y,z)
+    if coords is None:
+        return None
+
+    # preprocess coordinates
+    model_input = pre_process_coordinates(coords)
+
+    # model predict
+    pred = model.predict([model_input])
+
+    return pred
+
+
+def pre_process_coordinates(coordinates):
+    x_coordinates = coordinates[0]
+    y_coordinates = coordinates[1]
+    z_coordinates = coordinates[2]
+
+    x_coords_scaled = preprocessing.minmax_scale(x_coordinates)
+    y_coords_scaled = preprocessing.minmax_scale(y_coordinates)
+    z_coords_scaled = preprocessing.minmax_scale(z_coordinates)
+
+    return [*x_coords_scaled, *y_coords_scaled, *z_coords_scaled]
+
+
+
+"""########### end our code"""
 
 class Breakout():
 
@@ -64,8 +116,8 @@ class Breakout():
         pygame.mouse.set_visible(0)  # turn off mouse pointer
 
 
-        ## initialize model
-        svm = load("models/svm.joblib")
+        model, cap = init()
+
 
 
         while 1:
@@ -73,21 +125,17 @@ class Breakout():
             # 60 frames per second
             clock.tick(60)
 
-            # process key presses
-            ## get image, media pipe and preprocesssing
-            ## output is vector
-            predictor_variables = [] ## here should be the input of Stefan
-            pred = svm.predict(predictor_variables)
-            print(pred)
+            pred = get_action(model, cap)
 
-            if (pred == "A"):
-                batrect = batrect.move(-bat_speed, 0)
-                if (batrect.left < 0):
-                    batrect.left = 0
-            if (pred == "B"):
-                batrect = batrect.move(bat_speed, 0)
-                if (batrect.right > width):
-                    batrect.right = width
+            if pred is not None:
+                if (pred == "A" or pred == "C"):
+                    batrect = batrect.move(-bat_speed, 0)
+                    if (batrect.left < 0):
+                        batrect.left = 0
+                if (pred == "Z2"):
+                    batrect = batrect.move(bat_speed, 0)
+                    if (batrect.right > width):
+                        batrect.right = width
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

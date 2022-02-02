@@ -19,7 +19,7 @@ from sklearn import preprocessing
 import config
 from src.data_grabber import Cursor, get_image_paths
 from src.helper import reset_working_directory, save_data_to_csv, create_gif
-from src.mediapipe import get_coordinates
+from src.rigging import get_coordinates
 
 
 def png_to_csv():
