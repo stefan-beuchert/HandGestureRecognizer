@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from data_management import *
-
+from sklearn import decomposition
 
 
 def make_scatter_plot(_X: np.ndarray, _y: np.ndarray):
@@ -39,7 +39,7 @@ def make_scatter_plot(_X: np.ndarray, _y: np.ndarray):
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
     # change dot-size
-    s = [2 for n in range(len(y))]
+    s = [2 for n in range(len(y_numbered))]
 
     # make the scatter
     scat = ax.scatter(_X[:,0], _X[:,1], s=s, c=y_numbered, cmap=cmap, norm=norm)
@@ -49,6 +49,32 @@ def make_scatter_plot(_X: np.ndarray, _y: np.ndarray):
     ax.set_title('Distribution of classes in x and y direction')
     plt.show()
 
-#<X, y = load_data("data/all_data_preprocessed.csv")
-_, X, _, y = load_data_and_split("data/all_data_preprocessed.csv")
-make_scatter_plot(X,y)
+
+
+
+
+def plot_pca(_filename: str):
+
+    #<X, y = load_data("data/all_data_preprocessed.csv")
+    _, X, _, y = load_data_and_split(_filename)
+    #make_scatter_plot(X,y)
+
+
+    pca = decomposition.PCA(n_components=8)
+    pca.fit(X)
+    pcs = pca.transform(X)
+    print(pca.explained_variance_ratio_)
+
+    make_scatter_plot(pcs[:,:2], y)
+
+plot_pca("data/all_data_preprocessed.csv")
+
+    # Reorder the labels to have colors matching the cluster results
+    #y = np.choose(y, [1, 2, 0]).astype(float)
+    #ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y, cmap=plt.cm.nipy_spectral, edgecolor="k")
+
+    #ax.w_xaxis.set_ticklabels([])
+    #ax.w_yaxis.set_ticklabels([])
+    #ax.w_zaxis.set_ticklabels([])
+
+    #plt.show()
