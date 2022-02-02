@@ -43,7 +43,6 @@ def png_to_csv():
         # create_and_save_on_example_gif_for_each_class
         create_gif(image_paths, label)
 
-
         # images to coordinates
         coordinates = get_coordinates(image_paths)
 
@@ -145,14 +144,11 @@ def data_preprocessing():
     reset_working_directory(config.PLAYGROUND_PATH)
 
 
-if __name__ == '__main__':
+if True:
     # load raw data, convert images to coordinates, save as csv per class
     png_to_csv()
 
     # load class csvs, preprocess and save as single csv over all classes
     data_preprocessing()
 
-
-    #
-
-    print('done')
+    print('PreProcessing done!')

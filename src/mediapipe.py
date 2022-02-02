@@ -11,6 +11,7 @@ def get_coordinates(file_paths):
     # the landmarks are a dict with the coordinates (x,y,z) and a list of values for each image
     number_of_images = len(file_paths)
     number_of_landmarks = len(config.ID_TO_LANDMARK)
+
     res = [None] * number_of_landmarks
     for landmark_id in range(number_of_landmarks):
         res[landmark_id] = {}
@@ -47,3 +48,36 @@ def get_coordinates(file_paths):
                 #  but z is dependent on its distance to the palm -> should be normalized for VY
 
     return res
+
+
+def get_coordinates_for_one_image(image):
+
+    mp_hands = mp.solutions.hands
+    with mp_hands.Hands(
+            static_image_mode=True,
+            max_num_hands=1,
+            min_detection_confidence=0.5) as hands:
+
+        image.flags.writeable = False
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        results = hands.process(image)
+
+        # check if result is valid
+        if not results.multi_hand_landmarks:
+            print('no hand detected')
+            return None
+        elif len(results.multi_hand_landmarks) > 1:
+            print('more then one hand detected, not processing the image!')
+            return None
+
+        list_of_x_coordinates = []
+        list_of_y_coordinates = []
+        list_of_z_coordinates = []
+
+        for landmark_id, landmark in enumerate(results.multi_hand_landmarks[0].landmark):
+            list_of_x_coordinates.append(landmark.x)
+            list_of_y_coordinates.append(landmark.y)
+            list_of_z_coordinates.append(landmark.z)
+
+    return [list_of_x_coordinates, list_of_y_coordinates, list_of_z_coordinates]
