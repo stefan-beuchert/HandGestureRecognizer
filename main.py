@@ -14,11 +14,11 @@
 import zipfile
 import pandas as pd
 import os
-from sklearn.preprocessing import MinMaxScaler
+from sklearn import preprocessing
 
 import config
 from src.data_grabber import Cursor, get_image_paths
-from src.helper import reset_working_directory, save_data_to_csv
+from src.helper import reset_working_directory, save_data_to_csv, create_gif
 from src.mediapipe import get_coordinates
 
 
@@ -26,6 +26,7 @@ def png_to_csv():
     cursor = Cursor(config.SOURCE_PATH, 'zip')
 
     reset_working_directory(config.TARGET_PATH)
+    reset_working_directory(config.TARGET_PATH_GIFS)
     reset_working_directory(config.PLAYGROUND_PATH)
 
     file_available = True
@@ -38,6 +39,10 @@ def png_to_csv():
 
         # get list of images for this class
         label, image_paths = get_image_paths(config.PLAYGROUND_PATH)
+
+        # create_and_save_on_example_gif_for_each_class
+        create_gif(image_paths, label)
+
 
         # images to coordinates
         coordinates = get_coordinates(image_paths)
@@ -54,7 +59,7 @@ def png_to_csv():
             cursor.move_to_next_file()
 
 
-def preprocessing():
+def data_preprocessing():
     # unzipped csv data per class to playground folder
     cursor_for_zipped_files = Cursor(config.TARGET_PATH, 'zip')
     reset_working_directory(config.PLAYGROUND_PATH)
@@ -90,10 +95,30 @@ def preprocessing():
         print(f'From {size_with_all_rows} rows '
               f'{size_with_all_rows - size_after_dropping_nan_rows} have been dropped due to NaN values')
 
-        # normalize column values
-        # TODO should we normalize z columns for each class separately or over all of them combined
-        scaler = MinMaxScaler()
-        class_data_frame = pd.DataFrame(scaler.fit_transform(class_data_frame), columns=class_data_frame.columns)
+        # normalize row-wise ... this zooms onto hand (x and y between 0 and 1), but stretches z in proportionally
+
+        # scale row between 0 and 1 (for x, y, z separately)
+        x_data = class_data_frame.filter(regex='x$', axis=1)
+        x_data_col_names = x_data.columns
+        x_data_numpy_array = preprocessing.minmax_scale(x_data.T).T
+
+        y_data = class_data_frame.filter(regex='y$', axis=1)
+        y_data_col_names = y_data.columns
+        y_data_numpy_array = preprocessing.minmax_scale(y_data.T).T
+
+        z_data = class_data_frame.filter(regex='z$', axis=1)
+        z_data_col_names = z_data.columns
+        z_data_numpy_array = preprocessing.minmax_scale(z_data.T).T
+
+        all_data = [None] * len(x_data)
+        for frame_counter in range(len(x_data)):
+            all_data[frame_counter] = [*x_data_numpy_array[frame_counter],
+                                       *y_data_numpy_array[frame_counter],
+                                       *z_data_numpy_array[frame_counter]]
+
+        all_cols = [*x_data_col_names, *y_data_col_names, *z_data_col_names]
+
+        class_data_frame = pd.DataFrame(data=all_data, columns=all_cols)
 
         # add column with class label
         filename = os.path.splitext(os.path.basename(file))[0]
@@ -125,6 +150,9 @@ if __name__ == '__main__':
     png_to_csv()
 
     # load class csvs, preprocess and save as single csv over all classes
-    preprocessing()
+    data_preprocessing()
+
+
+    #
 
     print('done')

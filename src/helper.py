@@ -1,16 +1,15 @@
 import os
 import shutil
 import pandas as pd
+import imageio
 
 import config
 
 
 def reset_working_directory(path):
-    # create empty folder for unzipped data
-    path_for_unzipped_data = path
-    if os.path.exists(path_for_unzipped_data):
-        shutil.rmtree(path_for_unzipped_data)
-    os.mkdir(path_for_unzipped_data)
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    os.mkdir(path)
 
 
 def save_data_to_csv(data, label, target_path):
@@ -28,6 +27,9 @@ def save_data_to_csv(data, label, target_path):
     print(f'{label}.zip successfully saved in {target_path}!')
 
 
-
-
-
+def create_gif(paths, class_name):
+    paths = [path for path in paths if 'User1_1' in path]
+    images = []
+    for filename in paths:
+        images.append(imageio.imread(filename))
+    imageio.mimsave(f'{config.TARGET_PATH_GIFS}/{class_name}.gif', images)
