@@ -1,0 +1,12 @@
+pandas
+numpy
+sklearn
+matplotlib
+opencv-python
+mediapipe
+imageio
+boto3
+torch
+torchvision
+tensorflow
+pygame
