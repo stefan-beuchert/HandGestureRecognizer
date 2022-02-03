@@ -1,50 +1,84 @@
 import time
 import tensorflow as tf
-from tensorflow import keras
-from data_management import load_data_and_split, turn_string_label_to_int
+from data_management import load_data_and_split, split_data, turn_string_label_to_int
 import matplotlib.pyplot as plt
 
-tic = time.time()
+num_of_features = 63
+num_of_classes = 27
+input_shape = (num_of_features, )
+
 X_train, X_test, y_train, y_test = load_data_and_split("data/all_data_preprocessed.csv")
+X_train, X_val, y_train, y_val = split_data(X_train, y_train)
 y_train = turn_string_label_to_int(y_train)
+y_val = turn_string_label_to_int(y_val)
 y_test = turn_string_label_to_int(y_test)
 
+#X_train, y_train = turn_data_into_dataframe(X_train, y_train)
+#X_test, y_test = turn_data_into_dataframe(X_test, y_test)
+
+#train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
+#test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
+
 # Hyperparameters
-batch_size = 64
-num_epochs = 50
-learning_rate = 0.01
+batch_size = 128
+num_epochs = 250
+learning_rate = 0.002
 
-own_model = tf.keras.models.Sequential([
-    keras.layers.Input(shape=(63, )),
-    keras.layers.Dense(90, activation="relu", name="layer1"),
-    keras.layers.Dropout(0.25),
-    keras.layers.Dense(72, activation="relu", name="layer2"),
-    keras.layers.Dense(50, activation="relu", name="layer3"),
-    keras.layers.Dropout(0.25),
-    keras.layers.Dense(32, activation="relu", name="layer4"),
-    keras.layers.Dropout(0.25),
-    keras.layers.Dense(27, activation='softmax')
-])
+#shuffle_buffer_size = 100
+#train_dataset = train_dataset.shuffle(shuffle_buffer_size).batch(batch_size)
+#test_dataset = test_dataset.batch(batch_size)
 
-own_model.summary()
 
-own_model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
-                  loss=tf.keras.losses.CategoricalCrossentropy(),
-                  metrics=[tf.keras.metrics.Accuracy()],
-                  run_eagerly=True)
+class MyModel(tf.keras.Model):
 
-history = own_model.fit(
+    def __init__(self, _num_of_classes):
+        super().__init__()
+
+        self.dense1 = tf.keras.layers.Dense(72, activation="tanh")
+        self.dense2 = tf.keras.layers.Dense(50, activation="tanh")
+        self.dense3 = tf.keras.layers.Dense(42, activation="tanh")
+        self.dense4 = tf.keras.layers.Dense(32, activation="tanh")
+        self.dense5 = tf.keras.layers.Dense(_num_of_classes, activation="softmax")
+
+        self.dropout = tf.keras.layers.Dropout(0.25)
+
+    def call(self, inputs):
+        x = self.dense1(inputs)
+        x = self.dropout(x)
+        x = self.dense2(x)
+        x = self.dense3(x)
+        x = self.dropout(x)
+        x = self.dense4(x)
+        x = self.dropout(x)
+        x = self.dense5(x)
+        return x
+
+
+model = MyModel(num_of_classes)
+#input_layer = tf.keras.Input(shape=input_shape)
+#model.call(input_layer)
+model.build((None, num_of_features,))
+model.summary()
+
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+
+tic = time.time()
+
+history = model.fit(
     X_train,
     y_train,
     epochs=num_epochs,
     batch_size=batch_size,
-    validation_split=0.2
+    validation_data=(X_val, y_val)
 )
+
 time_elapsed = time.time() - tic
 print(f'Training complete in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.0f}s')
 
-test_loss, test_acc = own_model.evaluate(X_test, y_test, batch_size=batch_size)
-time_elapsed = time.time() - tic
+test_loss, test_acc = model.evaluate(X_test, y_test, batch_size=batch_size)
+time_elapsed = time.time() - time_elapsed
 print(f'Testing complete in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.0f}s')
 
 
@@ -57,5 +91,5 @@ plt.xlabel('epoch')
 plt.legend(['train', 'val'], loc='upper left')
 plt.show()
 
-print("Test Accuracy:", test_acc)
-print("Test Loss:", test_loss)
+print("Test Accuracy:", test_acc)  # 0.7160124182701111
+print("Test Loss:", test_loss)     # 0.8268201947212219

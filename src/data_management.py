@@ -2,6 +2,7 @@
 
 import numpy
 import numpy as np
+import pandas as pd
 from numpy import genfromtxt
 from sklearn.model_selection import train_test_split
 
@@ -28,26 +29,35 @@ def split_data(_X: numpy.ndarray, _y: numpy.ndarray):
 # function which should be called from outside which does all the data management at ones.
 def load_data_and_split(_string: str):
     X, y = load_data(_string)
-    X_train, X_test, y_train, y_test = split_data(X,y)
+    X_train, X_test, y_train, y_test = split_data(X, y)
 
     return X_train, X_test, y_train, y_test
 
 
-def turn_string_label_to_int(y):
+# Probably not needed after all
+def turn_data_into_dataframe(X, y):
+    #data = np.concatenate((X, y[:, None]), axis=1)
+    features_df = pd.DataFrame(data=X)
+    #df.rename(columns={"63": "target"})
+    target_series = pd.Series(y)
+    return features_df, target_series
+
+
+def turn_string_label_to_int(string_labels: numpy.ndarray):
     """
     This turns the list of string target labels into a numeric form.
-    :param y: List of target labels as string
-    :return: List of target labels as int
+    :param string_labels: List of target labels as string
+    :return: numeric_labels: List of target labels as int
     """
-    keys = np.unique(y)
+    keys = np.unique(string_labels)
     values = range(len(keys))
     label_conv = dict(zip(keys, values))
 
-    y_numbered = []
-    for value in y:
-        y_numbered.append(label_conv[value])
+    numeric_labels = []
+    for value in string_labels:
+        numeric_labels.append(label_conv[value])
 
-    return y_numbered
+    return np.asarray(numeric_labels)
 
 
 
