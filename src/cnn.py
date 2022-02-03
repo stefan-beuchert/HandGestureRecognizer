@@ -21,8 +21,8 @@ y_test = turn_string_label_to_int(y_test)
 
 # Hyperparameters
 batch_size = 128
-num_epochs = 250
-learning_rate = 0.002
+num_epochs = 150
+learning_rate = 0.001
 
 #shuffle_buffer_size = 100
 #train_dataset = train_dataset.shuffle(shuffle_buffer_size).batch(batch_size)
@@ -34,23 +34,27 @@ class MyModel(tf.keras.Model):
     def __init__(self, _num_of_classes):
         super().__init__()
 
-        self.dense1 = tf.keras.layers.Dense(72, activation="tanh")
-        self.dense2 = tf.keras.layers.Dense(50, activation="tanh")
-        self.dense3 = tf.keras.layers.Dense(42, activation="tanh")
-        self.dense4 = tf.keras.layers.Dense(32, activation="tanh")
-        self.dense5 = tf.keras.layers.Dense(_num_of_classes, activation="softmax")
+        self.dense5 = tf.keras.layers.Dense(65, activation="tanh")
+        self.dense6 = tf.keras.layers.Dense(72, activation="tanh")
+        self.dense1 = tf.keras.layers.Dense(50, activation="tanh")
+        self.dense2 = tf.keras.layers.Dense(42, activation="tanh")
+        self.dense3 = tf.keras.layers.Dense(35, activation="tanh")
+        self.dense4 = tf.keras.layers.Dense(30, activation="tanh")
+        self.out_layer = tf.keras.layers.Dense(_num_of_classes, activation="softmax")
 
         self.dropout = tf.keras.layers.Dropout(0.25)
 
     def call(self, inputs):
-        x = self.dense1(inputs)
-        x = self.dropout(x)
+        x = self.dense5(inputs)
+        x = self.dense6(x)
+        x = self.dense1(x)
+        #x = self.dropout(x)
         x = self.dense2(x)
         x = self.dense3(x)
-        x = self.dropout(x)
+        #x = self.dropout(x)
         x = self.dense4(x)
-        x = self.dropout(x)
-        x = self.dense5(x)
+        #x = self.dropout(x)
+        x = self.out_layer(x)
         return x
 
 
@@ -91,5 +95,5 @@ plt.xlabel('epoch')
 plt.legend(['train', 'val'], loc='upper left')
 plt.show()
 
-print("Test Accuracy:", test_acc)  # 0.7160124182701111
-print("Test Loss:", test_loss)     # 0.8268201947212219
+print("Test Accuracy:", test_acc)  # 0.8264743685722351
+print("Test Loss:", test_loss)     # 0.6262546181678772
