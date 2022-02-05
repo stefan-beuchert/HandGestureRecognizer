@@ -2,7 +2,6 @@
 
 import numpy
 import numpy as np
-import pandas as pd
 from numpy import genfromtxt
 from sklearn.model_selection import train_test_split
 from config import class_to_int_dict, combined_class_to_int_dict
@@ -34,16 +33,7 @@ def load_data_and_split(_string: str):
 
     return X_train, X_test, y_train, y_test
 
-
-# Probably not needed after all
-def turn_data_into_dataframe(X, y):
-    #data = np.concatenate((X, y[:, None]), axis=1)
-    features_df = pd.DataFrame(data=X)
-    #df.rename(columns={"63": "target"})
-    target_series = pd.Series(y)
-    return features_df, target_series
-
-
+# function that converts the letters to int values
 def turn_string_label_to_int(string_labels: numpy.ndarray, classes_combined=False):
     """
     This turns the list of string target labels into a numeric form.
