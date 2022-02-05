@@ -4,6 +4,8 @@ TARGET_PATH_GIFS = f'{TARGET_PATH}/gifs'
 PLAYGROUND_PATH = './unzipped_data/'
 FINAL_OUTPUT_NAME = 'all_data_preprocessed'
 
+COMBINED_CLASSES = True
+
 ID_TO_LANDMARK = ['wrist',
                   'thumb_cmc', 'thumb_mcp', 'thumb_ip', 'thumb_tip',
                   'index_finger_mcp', 'index_finger_pip', 'index_finger_dip', 'index_finger_tip',
@@ -39,3 +41,63 @@ CLASS_ID_TO_LABEL = {'class_01': 'A',
                      'class_26': 'Z',
                      'class_27': 'Z2',
                      }
+
+class_to_int_dict = {
+    'A': 0,
+    'B': 1,
+    'C': 2,
+    'D': 3,
+    'E': 4,
+    'F': 5,
+    'G': 6,
+    'H': 7,
+    'I': 8,
+    'J': 9,
+    'K': 10,
+    'L': 11,
+    'M': 12,
+    'N': 13,
+    'O': 14,
+    'P': 15,
+    'Q': 16,
+    'R': 17,
+    'S': 18,
+    'T': 19,
+    'U': 20,
+    'V': 21,
+    'W': 22,
+    'X': 23,
+    'Y': 24,
+    'Z': 25,
+    'Z2': 26
+}
+
+combined_class_to_int_dict = {
+    'A': 0,
+    'B': 0,
+    'C': 0,
+    'D': 1,
+    'E': 2,
+    'F': 2,
+    'G': 3,
+    'H': 3,
+    'I': 4,
+    'J': 5,
+    'K': 6,
+    'L': 7,
+    'M': 4,
+    'N': 8,
+    'O': 9,
+    'P': 10,
+    'Q': 1,
+    'R': 6,
+    'S': 5,
+    'T': 3,
+    'U': 3,
+    'V': 11,
+    'W': 12,
+    'X': 13,
+    'Y': 14,
+    'Z': 15,
+    'Z2': 16
+}

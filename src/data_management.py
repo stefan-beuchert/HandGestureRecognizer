@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from numpy import genfromtxt
 from sklearn.model_selection import train_test_split
+from config import class_to_int_dict, combined_class_to_int_dict
 
 # this call should be used from outside to get the data management done
 # X_train, X_test, y_train, y_test = load_data_and_split("data/all_data_preprocessed.csv")
@@ -43,15 +44,17 @@ def turn_data_into_dataframe(X, y):
     return features_df, target_series
 
 
-def turn_string_label_to_int(string_labels: numpy.ndarray):
+def turn_string_label_to_int(string_labels: numpy.ndarray, classes_combined=False):
     """
     This turns the list of string target labels into a numeric form.
+    :param classes_combined: Indicates if target classes have been combined (see config.py).
     :param string_labels: List of target labels as string
     :return: numeric_labels: List of target labels as int
     """
-    keys = np.unique(string_labels)
-    values = range(len(keys))
-    label_conv = dict(zip(keys, values))
+    if not classes_combined:
+        label_conv = class_to_int_dict
+    else:
+        label_conv = combined_class_to_int_dict
 
     numeric_labels = []
     for value in string_labels:

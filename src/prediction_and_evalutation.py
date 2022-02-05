@@ -3,18 +3,26 @@ import tensorflow as tf
 from joblib import load
 from data_management import load_data_and_split, turn_string_label_to_int
 from sklearn import metrics
+from config import COMBINED_CLASSES
 
-used_model = "SVM"
+used_model = "NN"
 
 X_train, X_test, y_train, y_test = load_data_and_split("data/all_data_preprocessed.csv")
-y_test = turn_string_label_to_int(y_test)
+y_test = turn_string_label_to_int(y_test, COMBINED_CLASSES)
 
 if used_model == "SVM":
-    svm = load("models/svm.joblib")
+    if not COMBINED_CLASSES:
+        svm = load("models/svm.joblib")
+    else:
+        # TODO: Change to SVM model with combined classes
+        svm = load("models/svm.joblib")
     y_pred_strings = svm.predict(X_test)
-    y_pred = turn_string_label_to_int(y_pred_strings)
+    y_pred = turn_string_label_to_int(y_pred_strings, COMBINED_CLASSES)
 elif used_model == "NN":
-    nn_model = tf.keras.models.load_model('models/neural_net')
+    if not COMBINED_CLASSES:
+        nn_model = tf.keras.models.load_model('models/neural_net')
+    else:
+        nn_model = tf.keras.models.load_model('models/neural_net_combined')
     y_pred_probs = nn_model.predict(X_test)
     y_pred = np.argmax(y_pred_probs, axis=-1)
 else:
@@ -24,7 +32,7 @@ print(y_train)
 ## evaluate with the test data set
 
 
-print("Accuracy:", metrics.f1_score(y_test, y_pred, average="micro"))  # 0.8204126346540077
+print("Accuracy:", metrics.f1_score(y_test, y_pred, average="micro"))  # NN: 0.8204126346540077, with combined classes: 0.9043271864159211
 print("AUC: ")
 #probs = svm.predict_proba(X_test)[:,1]
 #fpr, tpr, threshold = metrics.roc_curve(y_test, probs)
@@ -97,6 +105,6 @@ for i in range(len(TP)):
     FPR.append(TP[i]/(TP[i]+FP[i]))
     FNR.append(TP[i]/(TP[i]+FN[i]))
 
-print("Accuracy: " + str(np.mean(acc)))   # 0.9866972321965931
+print("Accuracy: " + str(np.mean(acc)))   # NN: 0.9866972321965931, with combined classes: 0.9794940458077211 ?
 print("TP/TP+FN: " + str(FNR))
 print("TP/TP+FP: " + str(FPR))
