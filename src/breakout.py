@@ -28,6 +28,7 @@ from sklearn import preprocessing
 import tensorflow as tf
 import numpy as np
 
+from config import COMBINED_CLASSES
 from src.rigging import get_coordinates_for_one_image
 
 """########## start our code"""
@@ -37,7 +38,10 @@ used_model = "NN"
 def init():
     ## initialize model
     if used_model == "NN":
-        model = tf.keras.models.load_model('models/neural_net')
+        if not COMBINED_CLASSES:
+            model = tf.keras.models.load_model('models/neural_net')
+        else:
+            model = tf.keras.models.load_model('models/neural_net_combined')
     else:
         model = load("models/svm.joblib")
 
@@ -54,7 +58,8 @@ def get_action(model, cap):
         return None
 
     # image to coordinate
-    coords = get_coordinates_for_one_image(image)
+    coords, drawn_image = get_coordinates_for_one_image(image)
+    cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
     ## attention -> this one returns tuple of coordinate list for each dimension (x,y,z)
     if coords is None:
         return None
