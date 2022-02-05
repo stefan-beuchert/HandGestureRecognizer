@@ -25,19 +25,26 @@ import sys, pygame, random
 from joblib import load
 import cv2
 from sklearn import preprocessing
+import tensorflow as tf
+import numpy as np
 
 from src.rigging import get_coordinates_for_one_image
 
 """########## start our code"""
 
+used_model = "SVM"
+
 def init():
     ## initialize model
-    svm = load("models/svm.joblib")
+    if used_model == "NN":
+        model = tf.keras.models.load_model('models/neural_net')
+    else:
+        model = load("models/svm.joblib")
 
     # open cap
     cap = cv2.VideoCapture(0)
 
-    return svm, cap
+    return model, cap
 
 def get_action(model, cap):
     success, image = cap.read()
@@ -57,6 +64,9 @@ def get_action(model, cap):
 
     # model predict
     pred = model.predict([model_input])
+
+    if used_model == "NN":
+        pred = np.argmax(pred, axis=-1)
 
     return pred
 
@@ -128,11 +138,11 @@ class Breakout():
             pred = get_action(model, cap)
 
             if pred is not None:
-                if (pred == "A" or pred == "C"):
+                if (pred == "A" or pred == "C" or pred ==0 or pred==2):
                     batrect = batrect.move(-bat_speed, 0)
                     if (batrect.left < 0):
                         batrect.left = 0
-                if (pred == "Z2"):
+                if (pred == "Z2" or pred==26):
                     batrect = batrect.move(bat_speed, 0)
                     if (batrect.right > width):
                         batrect.right = width
