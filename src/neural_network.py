@@ -2,18 +2,20 @@ import time
 import tensorflow as tf
 from data_management import load_data_and_split, split_data, turn_string_label_to_int
 import matplotlib.pyplot as plt
+import numpy as np
+from config import COMBINED_CLASSES
 
 tf.random.set_seed(42)
 
-num_of_features = 63
-num_of_classes = 27
-input_shape = (num_of_features, )
-
 X_train, X_test, y_train, y_test = load_data_and_split("data/all_data_preprocessed.csv")
 X_train, X_val, y_train, y_val = split_data(X_train, y_train)
-y_train = turn_string_label_to_int(y_train)
-y_val = turn_string_label_to_int(y_val)
-y_test = turn_string_label_to_int(y_test)
+y_train = turn_string_label_to_int(y_train, COMBINED_CLASSES)
+y_val = turn_string_label_to_int(y_val, COMBINED_CLASSES)
+y_test = turn_string_label_to_int(y_test, COMBINED_CLASSES)
+
+num_of_features = X_train.shape[1]
+num_of_classes = len(np.unique(y_train))
+input_shape = (num_of_features, )
 
 # Hyperparameters
 batch_size = 128
@@ -86,9 +88,10 @@ plt.xlabel('epoch')
 plt.legend(['train', 'val'], loc='upper left')
 plt.show()
 
-print("Test Accuracy:", test_acc)  # 0.8204126358032227
-print("Test Loss:", test_loss)     # 0.6359207630157471
+print("Test Accuracy:", test_acc)  # 0.8204126358032227, with combined classes: 0.9043272137641907
+print("Test Loss:", test_loss)     # 0.6359207630157471, with combined classes: 0.37832242250442505
 
-model.predict(X_test)
-
-model.save("models/neural_net")
+if not COMBINED_CLASSES:
+    model.save("models/neural_net")
+else:
+    model.save("models/neural_net_combined")
