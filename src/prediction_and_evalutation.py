@@ -4,9 +4,13 @@ from joblib import load
 from data_management import load_data_and_split, turn_string_label_to_int
 from sklearn import metrics
 from config import COMBINED_CLASSES
+import time
+
+tic = time.time()
+
 
 # specify the model
-used_model = "SVM"
+used_model = "NN"
 
 # import the true values to compare them with the predictions
 X_train, X_test, y_train, y_test = load_data_and_split("data/all_data_preprocessed.csv")
@@ -18,16 +22,23 @@ if used_model == "SVM":
         svm = load("models/svm.joblib")
     else:
         svm = load("models/svm_combined.joblib")
+    time_elapsed = time.time() - tic
+    print(f'Data preparation completed in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.0f}s')
     y_pred = svm.predict(X_test)
 elif used_model == "NN":
     if not COMBINED_CLASSES:
         nn_model = tf.keras.models.load_model('models/neural_net')
     else:
         nn_model = tf.keras.models.load_model('models/neural_net_combined')
+    time_elapsed = time.time() - tic
+    print(f'Data preparation completed in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.0f}s')
     y_pred_probs = nn_model.predict(X_test)
     y_pred = np.argmax(y_pred_probs, axis=-1)
 else:
     print(f"No model for {used_model} specified!")
+
+time_elapsed = time.time() - tic
+print(f'Data predictions completed in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.0f}s')
 
 # calculate the confusion matrix
 confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
