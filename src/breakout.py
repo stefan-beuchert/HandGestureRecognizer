@@ -32,7 +32,7 @@ from src.rigging import get_coordinates_for_one_image
 
 """########## start our code"""
 
-used_model = "SVM"
+used_model = "NN"
 
 def init():
     ## initialize model
