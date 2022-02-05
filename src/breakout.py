@@ -34,35 +34,37 @@ from data_management import turn_string_label_to_int
 
 """########## start our code"""
 
-used_model = "NN"
+used_model = "SVM"
+
 
 def init():
-    ## initialize model
+    ## load model from file
     if used_model == "NN":
         if not COMBINED_CLASSES:
             model = tf.keras.models.load_model('models/neural_net')
         else:
             model = tf.keras.models.load_model('models/neural_net_combined')
     else:
-        # TODO: Add SVM model for combined classes
         if not COMBINED_CLASSES:
             model = load("models/svm.joblib")
         else:
-            model = load("models/svm.joblib")
+            model = load("models/svm_combined.joblib")
 
-    # open cap
+    # open camera
     cap = cv2.VideoCapture(0)
 
     return model, cap
 
 def get_action(model, cap):
+    # method is repeatedly called each cycle
+
     success, image = cap.read()
     if not success:
         print("Ignoring empty camera frame.")
         # If loading a video, use 'break' instead of 'continue'.
         return None
 
-    # image to coordinate
+    # image to coordinates
     coords, drawn_image = get_coordinates_for_one_image(image)
     if drawn_image is not None:
         cv2.imshow('MediaPipe Hands', cv2.flip(drawn_image, 1))
@@ -70,14 +72,13 @@ def get_action(model, cap):
     if coords is None:
         return None
 
-    # preprocess coordinates
+    # apply scaling to coordinates and draw bounding boxes on hand
     model_input = pre_process_coordinates(coords)
 
-    # model predict
+    # get the predicted class from the calculated coordinates
     pred = model.predict([model_input])
 
-    if used_model == "SVM":
-        pred = turn_string_label_to_int(pred)
+    # decide for the class with the highest probability
     if used_model == "NN":
         pred = np.argmax(pred, axis=-1)
 
