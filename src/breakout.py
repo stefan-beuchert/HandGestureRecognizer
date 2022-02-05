@@ -28,7 +28,9 @@ from sklearn import preprocessing
 import tensorflow as tf
 import numpy as np
 
+from config import COMBINED_CLASSES
 from src.rigging import get_coordinates_for_one_image
+from data_management import turn_string_label_to_int
 
 """########## start our code"""
 
@@ -37,9 +39,16 @@ used_model = "NN"
 def init():
     ## initialize model
     if used_model == "NN":
-        model = tf.keras.models.load_model('models/neural_net')
+        if not COMBINED_CLASSES:
+            model = tf.keras.models.load_model('models/neural_net')
+        else:
+            model = tf.keras.models.load_model('models/neural_net_combined')
     else:
-        model = load("models/svm.joblib")
+        # TODO: Add SVM model for combined classes
+        if not COMBINED_CLASSES:
+            model = load("models/svm.joblib")
+        else:
+            model = load("models/svm.joblib")
 
     # open cap
     cap = cv2.VideoCapture(0)
@@ -54,7 +63,8 @@ def get_action(model, cap):
         return None
 
     # image to coordinate
-    coords = get_coordinates_for_one_image(image)
+    coords, drawn_image = get_coordinates_for_one_image(image)
+    cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
     ## attention -> this one returns tuple of coordinate list for each dimension (x,y,z)
     if coords is None:
         return None
@@ -65,6 +75,8 @@ def get_action(model, cap):
     # model predict
     pred = model.predict([model_input])
 
+    if used_model == "SVM":
+        pred = turn_string_label_to_int(pred)
     if used_model == "NN":
         pred = np.argmax(pred, axis=-1)
 
@@ -138,14 +150,24 @@ class Breakout():
             pred = get_action(model, cap)
 
             if pred is not None:
-                if (pred == "A" or pred == "C" or pred ==0 or pred==2):
-                    batrect = batrect.move(-bat_speed, 0)
-                    if (batrect.left < 0):
-                        batrect.left = 0
-                if (pred == "Z2" or pred==26):
-                    batrect = batrect.move(bat_speed, 0)
-                    if (batrect.right > width):
-                        batrect.right = width
+                if not COMBINED_CLASSES:
+                    if (pred==0 or pred==2):
+                        batrect = batrect.move(-bat_speed, 0)
+                        if (batrect.left < 0):
+                            batrect.left = 0
+                    if (pred==26):
+                        batrect = batrect.move(bat_speed, 0)
+                        if (batrect.right > width):
+                            batrect.right = width
+                else:
+                    if (pred==0):
+                        batrect = batrect.move(-bat_speed, 0)
+                        if (batrect.left < 0):
+                            batrect.left = 0
+                    if (pred==16):
+                        batrect = batrect.move(bat_speed, 0)
+                        if (batrect.right > width):
+                            batrect.right = width
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

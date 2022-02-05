@@ -52,6 +52,8 @@ def get_coordinates(file_paths):
 
 def get_coordinates_for_one_image(image):
 
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing_styles = mp.solutions.drawing_styles
     mp_hands = mp.solutions.hands
     with mp_hands.Hands(
             static_image_mode=True,
@@ -80,4 +82,14 @@ def get_coordinates_for_one_image(image):
             list_of_y_coordinates.append(landmark.y)
             list_of_z_coordinates.append(landmark.z)
 
-    return (list_of_x_coordinates, list_of_y_coordinates, list_of_z_coordinates)
+        image.flags.writeable = True
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                mp_drawing.draw_landmarks(
+                    image,
+                    hand_landmarks,
+                    mp_hands.HAND_CONNECTIONS,
+                    mp_drawing_styles.get_default_hand_landmarks_style(),
+                    mp_drawing_styles.get_default_hand_connections_style())
+
+    return (list_of_x_coordinates, list_of_y_coordinates, list_of_z_coordinates), image
