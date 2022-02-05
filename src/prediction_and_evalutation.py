@@ -46,7 +46,7 @@ FP = confusion_matrix.sum(axis=0) - np.diag(confusion_matrix)
 FN = confusion_matrix.sum(axis=1) - np.diag(confusion_matrix)
 TP = np.diag(confusion_matrix)
 TN = confusion_matrix.sum() - (FP + FN + TP)
-#np.savetxt("figures/svm_confusion_matrix.csv", confusion_matrix, fmt="%d", delimiter=",")
+#np.savetxt("tables/svm_confusion_matrix.csv", confusion_matrix, fmt="%d", delimiter=",")
 print("TP, FP, FN, TN: ", str([TP, FP, FN, TN]))
 
 
