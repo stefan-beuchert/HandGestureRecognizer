@@ -64,7 +64,8 @@ def get_action(model, cap):
 
     # image to coordinate
     coords, drawn_image = get_coordinates_for_one_image(image)
-    cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
+    if drawn_image is not None:
+        cv2.imshow('MediaPipe Hands', cv2.flip(drawn_image, 1))
     ## attention -> this one returns tuple of coordinate list for each dimension (x,y,z)
     if coords is None:
         return None
