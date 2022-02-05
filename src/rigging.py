@@ -50,7 +50,7 @@ def get_coordinates(file_paths):
     return res
 
 
-def get_coordinates_for_one_image(image):
+def get_coordinates_for_one_image(image_col):
 
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
@@ -60,18 +60,18 @@ def get_coordinates_for_one_image(image):
             max_num_hands=1,
             min_detection_confidence=0.5) as hands:
 
-        image.flags.writeable = False
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image_col.flags.writeable = False
+        image = cv2.cvtColor(image_col, cv2.COLOR_BGR2RGB)
 
         results = hands.process(image)
 
         # check if result is valid
         if not results.multi_hand_landmarks:
             #print('no hand detected')
-            return None
+            return None, image_col
         elif len(results.multi_hand_landmarks) > 1:
             print('more then one hand detected, not processing the image!')
-            return None
+            return None, image_col
 
         list_of_x_coordinates = []
         list_of_y_coordinates = []
@@ -82,14 +82,14 @@ def get_coordinates_for_one_image(image):
             list_of_y_coordinates.append(landmark.y)
             list_of_z_coordinates.append(landmark.z)
 
-        image.flags.writeable = True
+        image_col.flags.writeable = True
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(
-                    image,
+                    image_col,
                     hand_landmarks,
                     mp_hands.HAND_CONNECTIONS,
                     mp_drawing_styles.get_default_hand_landmarks_style(),
                     mp_drawing_styles.get_default_hand_connections_style())
 
-    return (list_of_x_coordinates, list_of_y_coordinates, list_of_z_coordinates), image
+    return (list_of_x_coordinates, list_of_y_coordinates, list_of_z_coordinates), image_col
