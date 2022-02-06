@@ -71,12 +71,12 @@ history = model.fit(
 )
 
 time_elapsed = time.time() - tic
-print(f'Training complete in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.0f}s')
+print(f'Training complete in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.0f}s')  # 2m 36s, with combined classes: 2m 38s
 
 tic = time.time()
 test_loss, test_acc = model.evaluate(X_test, y_test, batch_size=batch_size)
 time_elapsed = time.time() - tic
-print(f'Testing complete in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.0f}s')
+print(f'Testing complete in {(time_elapsed // 60):.0f}m {(time_elapsed % 60):.5f}s') # 0m 0.20598s, with combined classes: 0m 0.20813s
 
 
 print(history.history.keys())
