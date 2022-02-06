@@ -51,11 +51,8 @@ def make_scatter_plot(_X: np.ndarray, _y: np.ndarray):
     ax.set_title('PCA diagram (49% variance)')
     plt.xlabel("PC1 (30.0%)")
     plt.ylabel("PC2 (19.0%)")
+    plt.savefig("figures/PCA.png", dpi=300)
     plt.show()
-    #plt.savefig("figures/PCA.png", dpi=300)
-
-
-
 
 
 def plot_pca(_filename: str):
@@ -123,4 +120,4 @@ def heatmap(_string: str):
 
 
 plot_pca("data/all_data_preprocessed.csv")
-heatmap("tables/svm_confusion_matrix_combined.csv")
+#heatmap("tables/svm_confusion_matrix_combined.csv")
