@@ -92,10 +92,10 @@ def heatmap(_string: str):
              "Class 20",
              "Class 21", "Class 22", "Class 23", "Class 24", "Class 25", "Class 26", "Class 27"]
     else:
-        ticks = ["Collection 01 (1-3)", "Collection 02 (4,17)", "Collection 03 (5,6)", "Collection 04 (7,8)",
+        ticks = ["Collection 01 (1-3)", "Collection 02 (4,17)", "Collection 03 (5,6)", "Collection 04 (7,8,20,21)",
                  "Collection 05 (9,13)", "Collection 06 (10,19)",
                  "Collection 07 (11,18)",
-                 "Class 12", "Class 14", "Class 15", "Class 16", "Collection 08 (20,21)", "Class 22",
+                 "Class 12", "Class 14", "Class 15", "Class 16", "Class 22",
                  "Class 23", "Class 24", "Class 25", "Class 26", "Class 27"]
 
     # Show all ticks and label them with the respective list entries
@@ -112,13 +112,13 @@ def heatmap(_string: str):
             text = ax.text(j, i, _array_for_text[i, j],
                            ha="center", va="center", size=4)
 
-    ax.set_title("Confusion matrix for SVM with combined classes")
+    ax.set_title("Confusion matrix for NN with combined classes")
     fig.tight_layout()
 
     # save figure and display it
-    plt.savefig("figures/svm_heatmap_combined.png", dpi=300)
+    plt.savefig("figures/NN_heatmap_combined.png", dpi=300)
     plt.show()
 
 
 #plot_pca("data/all_data_preprocessed.csv")
-heatmap("tables/svm_confusion_matrix_combined.csv")
+heatmap("tables/nn_confusion_matrix_combined.csv")
