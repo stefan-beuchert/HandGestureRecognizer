@@ -85,7 +85,7 @@ We designed a pipeline consisting of four steps:
 
 These four steps are further explained in the following:
 
-### <a name="concept-design-preprocessing"></a>Preprocessing: (Stefan)
+### <a name="concept-design-preprocessing"></a>Preprocessing: 
 Before even starting the actual preprocessing, a solution had to be found to deal with the enormous data size. Handling 245 GB of data on a laptop was no option since the calculation would have taken several hours. Doing multiple iterations to improve the outcome with this limitation would have been a very painful process. Luckily we have the BHT cluster available where we could download the data to a PVC and interact with it using pods. This allowed a less time-intensive interaction with the data.
 
 As described above (see "Theory"), the library mediapipe was then used to detect and convert the single frames of a gesture (as grayscale image) to the coordinates of the different landmarks of the hand. More specifically the sum of pixel values is converted to 21 points described by an X, Y and Z value. This not only reduces the amount of data drastically but also gets rid of most of the noise in the original image (for example all the background data). 
