@@ -34,9 +34,9 @@ Our aim was to implement a Hand Gesture Recognizer Model that adequately recogni
 The recognition of hand gestures and the interpretation of those play an important part in human-computer interaction.
 Hand Gesture Recognition (HGR) belongs to an active research field.
 
-There are several use-cases for gesture recognition, some examples are the understanding of sign language, 
+There are several use cases for gesture recognition, some examples are the understanding of sign language, 
 software that requires visual input like video games or assisting tools for situations where physical interaction with
-a system or voice commands aren't possible. It can also be used in robot remote control or musical creation. \
+a system or voice commands are not possible. It can also be used in robot remote control or musical creation. \
 With the world becoming more and more technology-driven, working in and creating virtual environments becomes increasingly important.
 Collaboratively working with virtual and real-world objects is also something that gesture recognition can be useful in.
 
@@ -48,7 +48,7 @@ the 3D skeleton keypoints from the camera image and then use a gesture classifie
 **Something worth noting**: We defined a gesture for us not necessarily as a movement but something that can also be a pose
 you do with your hand, essentially. This is why for this project, our aim was not to track and recognize hand movements 
 where the time component is an important factor, but to recognize hand signs and to correctly classify those. Therefore,
-we're looking at frames individually instead of factoring in the time and several frames at once.
+we are looking at frames individually instead of factoring in the time and several frames at once.
 
 ## <a name="theory"></a>2. Theory
 Recognizing hand gestures is a classic computer vision use case and can be used to tackle many different problems, all of which can be categorized under the topic "human-machine interaction" or HMI. Using visual input to interact with machines in a harsh environment (underwater or in loud areas) where voice or physical inputs are not possible or just using gestures to trigger a camera are potential use cases where gesture recognition can be applied.
@@ -57,13 +57,13 @@ When talking about gesture recognition, the process from input to actual recogni
 - The identification of the hand itself
 - The classification of the gesture that the hand is doing. This also includes the class "not a gesture" if the input does not match any previously learned patterns.
 
-The solution in this repository makes use of the mediapipe library made by Google [[2]](#references-2), which is one of the most widely shared and re-usable libraries for media processing. This pre-trained solution already tackles the first subproblem (the identification of the hand(s) itself) with a pre-trained ml model. In addition to that, it is also possible to represent the hand not as a sum of pixel value, but as a collection of 21 landmarks that define the hand. The tip of the pinky finger represented by an X, Y and Z-coordinate is one example of those landmarks. The different values of the coordinates are estimated by another pre-trained model contained in the mediapipe library. You can see an overview of those landmarks in the image below.
+The solution in this repository makes use of the mediapipe library made by Google [[2]](#references-2), which is one of the most widely shared and re-usable libraries for media processing. This pre-trained solution already tackles the first subproblem (the identification of the hand(s) itself) with a pre-trained machine learning model. In addition to that, it is also possible to represent the hand not as a sum of pixel values, but as a collection of 21 landmarks that define the hand. The tip of the pinky finger represented by an X, Y and Z-coordinate is one example of those landmarks. The different values of the coordinates are estimated by another pre-trained model contained in the mediapipe library. You can see an overview of those landmarks in the image below.
 
 <p align="center">
     <img src="figures/hand_landmarks.png" alt="Mediapipe Landmarks" width="450"/>
 </p>
 
-With the different hand landmarks as a database, it was possible to train a model to predict different hand gestures. The output was then used to interact hands-free with the classic atari breakout game as a showcase where this kind of solution can be applied.
+With the different hand landmarks as a database, it was possible to train a model to predict different hand gestures. The output was then used to interact hands-free with the classic atari breakout game as a showcase where this kind of solution can be applied to.
 
 ## <a name="dataset"></a>3. Data Set
 The data used to train the final model(s) was provided by Alessandro Floris and his team, who introduced it in a paper called "A dynamic hand gesture recognition data set for human-computer interfaces" [[1]](#references-1).
@@ -110,7 +110,7 @@ high dimensional data but also with non-linear structures inside if there were a
 ####  <a name="concept-design-nn"></a> 1. Neural Network (NN)
 For one of the gesture classifiers, we fitted a NN for the recognition of our hand gestures: \
 NNs are modeled loosely on the human brain and can consist of thousands or even millions of simple processing nodes 
-that are densely interconnected. They are organized into layers of nodes, and they’re “feed-forward”: 
+that are densely interconnected. They are organized into layers of nodes, and they are “feed-forward”: 
 The data moves through them in only one direction [[4]](#references-4). 
 
 <p align="center">
@@ -122,12 +122,12 @@ composed of input data, weights, a bias (or threshold or intercept) and an outpu
 The equation for a NN is a linear combination of the independent variables and their respective weights and bias
 term for each neuron where the weights help determine the importance of any given variable.
 
-Although we're working with image data we are not using Convolutional Neural Networks (CNNs) like one might initially assume.
-This is because the data is already being preprocessed into structured data and keypoints, so performing convolutions were we 
-take into account any spatial information isn't necessary. \
+Although we are working with image data we are not using Convolutional Neural Networks (CNNs) like one might initially assume.
+This is because the data is already being preprocessed into structured data and keypoints, so performing convolutions where we 
+take into account any spatial information is not necessary. \
 The outputs are then the probabilities for each class for a certain input. 
 
-####  <a name="concept-design-svm"></a> 2. Support Vector Machine (SVM) (Matthias)
+####  <a name="concept-design-svm"></a> 2. Support Vector Machine (SVM)
 Next to the NN also a SVM should be fitted to have a comparison of different algorithms.
 
 <p align="center">
@@ -140,7 +140,7 @@ dimensional data. \
 Something to keep in mind for SVMs is that they are normally applied on binary problems and tend to not work that well with multi-class classification.
 Furthermore, SVMs can be quite slow if you have too many training samples.
 
-### <a name="concept-design-application"></a>Implement a small application to show the working system (Matthias)
+### <a name="concept-design-application"></a>Implement a small application to show the working system
 To test our model in the real world we decided to apply the better model on a small game. 
 A break-out game seemed to be good for this. There are just two possible moves for the bar: go to the left or go to the right.
 Hence there are also just two gestures needed to control the game. The whole pipeline should be kept easy and is orientated 
@@ -150,8 +150,6 @@ class. According to the prediction the bar is then moved to the right or left as
 is not classified as one of the gestures above the bar is also not moving.
 
 ## <a name="implementation"></a>5. Implementation
-
-Where have been the problems? What did we do differently according to the plan shown above?
 
 In the following section we will go into our actual implementation and how this might have deviated from our original concepts
 we talked about in [section 4](#concept-and-design). Problems, measures for improvement and other aspects will be discussed as well. 
@@ -163,11 +161,11 @@ The values for the X and Y values are automatically scaled between 0 and 1 corre
 
 Before continuing it is wise to get rid of the observations where mediapipe was not able to detect a hand or detected multiple hands. The according frames are not looked at further and are just skipped.
 
-The automatic scaling of the mediapipe output for the X and Y coordinates is problematic for the use case, since it does not give the relative value of the landmarks to each other, but the value of the landmark in relation to the position in the image. In other words, the same gesture once done in the top right of a frame and once in the bottom left of another frame will result in drastically different coordinate values, even if both gestures are identical. The remove the noise of the positional difference, another scaling was applied.
+The automatic scaling of the mediapipe output for the X and Y coordinates is problematic for the use case, since it does not give the relative value of the landmarks to each other, but the value of the landmark in relation to the position in the image. In other words, the same gesture once done in the top right of a frame and once in the bottom left of another frame will result in drastically different coordinate values, even if both gestures are identical. To remove the noise of the positional difference, another scaling was applied.
 
 This second scaling of the data does not look at the whole image, but only at the extracted landmarks. More specifically at the X, Y and Z coordinates over all the landmarks of one frame separately. They are then scaled from values of 0 (for the smallest value) and 1 (for the biggest). This is one way of extracting the hand from the full image and is a simpler version of the related approach of using bounding boxes.
 
-One example for more clarity: Two separate frames have the same hand gesture, where a person once makes a thumbs-up gesture in the top left and once in the bottom right of an image. Even when both gestures are identical, the coordinates will very much differ, since the gesture in the top left will have X and Y values closer to one and the gesture in the bottom right closer to 0. Be rescaling the X values between the lowest X coordinate of all the landmarks in one frame (probably the tip of the thumb, since it is a thumbs-up gesture) and the highest X value (probably the bottom of the pinky / the pinky metacarpophalangeal) both frames will have the same values for each X coordinate. The position in the original frame is not important anymore.
+One example for more clarity: Two separate frames have the same hand gesture, where a person once makes a thumbs-up gesture in the top left and once in the bottom right of an image. Even when both gestures are identical, the coordinates will very much differ, since the gesture in the top left will have X and Y values closer to one and the gesture in the bottom right closer to 0. By rescaling the X values between the lowest X coordinate of all the landmarks in one frame (probably the tip of the thumb, since it is a thumbs-up gesture) and the highest X value (probably the bottom of the pinky / the pinky metacarpophalangeal) both frames will have the same values for each X coordinate. The position in the original frame is not important anymore.
 
 The same is done for the Y and Z coordinate. Criticism: It could be said that this method will distort the relations of the landmarks since it will be always scaled between 0 and 1 for each dimension separately. More specifically a hand gesture of a raised hand with fingertips sticking together and a gesture of a raised hand with fingers spread apart will result in the same coordinates after rescaling since the X values will always be between 0 and one for thump to pinky.
 
@@ -191,7 +189,7 @@ there is visually almost no difference. This is another challenge that our model
 |--------------|----------------------|
 ![Gesture Class 20](figures/class_20.gif) | ![Gesture Class 21](figures/class_21.gif)
 
-For what we were trying to achieve, correctly distinguishing between gestures that are that similar wasn't necessary. To get
+For what we were trying to achieve, correctly distinguishing between gestures that are that similar was not necessary. To get
 a better classifier we then examined the data and the classes manually and decided to combine several classes into one, e.g.
 gesture classes 1, 2 and 3 became one class. More details can be found in the following table:
 
@@ -224,23 +222,23 @@ our evaluation and for the implementation in our application to quickly show the
 #### <a name="implementation-nn"></a>1. Neural Network (NN)
 Fitting a rather simple Feedforward Neural Network (FFNN) already proved as sufficient enough for our purposes, so there 
 was no need for a more complex network architecture. \
-We tried out several different configurations and played around with different hyperparameter values: For the latter there was
-the number of epochs to train with, the batch size (since we're training in batches) as well as the learning rate for our optimizer
+We tried out several different configurations and played around with different hyperparameter values: For the latter, there was
+the number of epochs to train with, the batch size (since we are training in batches) as well as the learning rate for our optimizer
 where we used the Adam optimizer. For our loss function we used "Sparse Categorical Crossentropy" since this is a 
 classification problem and our labels were cast to integers. For the metric we used Accuracy.\
-After a certain number of epochs the training accuracy only increased slightly while the validation accuracy didn't and even got
+After a certain number of epochs the training accuracy only increased slightly while the validation accuracy did not and even got
 a little worse than before. Therefore, we decided to stop after 150 epochs. For batch size we settled with a value of 128
 and for the learning rate, after first using a rate around 0.01 we worked our way down to 0.001 as this yielded higher 
 accuracy scores as well. Furthermore, we also tried adding and removing additional layers and trying out a different number
 of nodes. Adding two to three more layers did give better results, however, after a certain number of layers the trade-off
-between improved results and network model complexity wasn't worthwile. \
+between improved results and network model complexity was not worthwile. \
 We finally settled for a network with all 63 predictor variables as input, 6 fully-connected hidden layers and a softmax
 output for the probabilities for the different classes (27 originally and 17 with the combined classes approach). 
 We then predicted using the class with the highest probability for a certain input. \
-We also tried adding dropout layers to prevent overfitting. But since our model didn't seem to overfit and the evaluation results
-for the model with the dropout layers weren't good, we decided to not further follow that approach.
+We also tried adding dropout layers to prevent overfitting. But since our model did not seem to overfit and the evaluation results
+for the model with the dropout layers were not good, we decided to not further follow that approach.
 
-The graphs for our final network trainings can be seen below. The training for the NN that's based on the combined classes 
+The graphs for our final network trainings can be seen below. The training for the NN that is based on the combined classes 
 approach looks very similar to the original one, only the accuracy values are lower.
 
 Training Original | Training with Combined Classes |  Training with Dropout Layers
@@ -248,7 +246,7 @@ Training Original | Training with Combined Classes |  Training with Dropout Laye
 ![Training Original](figures/train_val_accuracy_without_dropout_and_additional_layers.png)  |  ![Training with Combined Classes](figures/train_val_accuracy_without_dropout_and_additional_layers_and_combined_classes.png) | ![Model training with Dropout Layers](figures/train_val_accuracy.png)
 
 
-#### <a name="implementation-svm"></a>2. Support Vector Machine (SVM) (Matthias)
+#### <a name="implementation-svm"></a>2. Support Vector Machine (SVM)
 But we forgot that SVM has problems by fitting lots of data. Not because of the results but caused by the calculation time. 
 the length of the dataset is not just taken linearly into account but quadratic. This caused computational times of over 
 an hour per run. These times 
@@ -258,7 +256,7 @@ variables from strings to integers. This accelerated the whole training time fro
 But also the long training times before have not been a real problem. The development has just been slowed down. 
 Fortunately, this algorithm does not have as many hyperparameters as NN for example. So there was not so much optimization needed.
 
-### <a name="implementation-application"></a>Implement a small application to show the working system (Matthias)
+### <a name="implementation-application"></a>Implement a small application to show the working system
 As said before, we needed the saved models especially for the game. Nobody wants to play it if the training of the NN or
 the SVM takes several minutes. For that reason we just import one model at the beginning of the game and use that for the
 predictions. The loading times have been reduced to be acceptable for the player.
@@ -266,7 +264,7 @@ While developing the game we discovered that combining the classes had also a go
 choosing several classes per direction, one for each direction was enough. This improved the game play as the speed
 of the game increased.
 
-## <a name="results"></a>6. Results (Matthias)
+## <a name="results"></a>6. Results
 Different metrics were applied to get an overview how good the algorithms perform. First, we did a PCA, then we generated the
 confusion matrices and calculated metrics from it and last we had a short look on the execution times.
 
@@ -292,7 +290,7 @@ the prediction was wrong". The colors are according to it.
 ![Conf_matrix_svm](https://github.com/stefan-beuchert/HandGestureRecognizer/blob/main/figures/svm_heatmap_27.png)
 In the figure above, one can see clearly several clusters of classes where the SVM algorithm mispredicted some gestures.
 For example, the classes one to three or the classes 20 and 21 form this kind of clusters. This plot was the basis of our
-manual collections of class as mentioned above. But in general, it can be stated that there are also classes which can be 
+manual collections of classes as mentioned above. But in general, it can be stated that there are also classes which can be 
 classified quite precisely as classes 24 and 25.
 
 ![Conf_matrix_svm_combined](https://github.com/stefan-beuchert/HandGestureRecognizer/blob/main/figures/svm_heatmap_combined.png)
@@ -313,12 +311,12 @@ not change.
 
 In total, these results give us a good understanding of the data. They show gestures which might be similar if they are just 
 interpreted frame-by-frame. That the algorithms come to similar results which classes should be combined to collections also
-make our results more reliable. We would have been surprised if the algorithms suggest combining different classes. Like this
+make our results more reliable. We would have been surprised if the algorithms suggest combining different classes. Like this,
 they support each other.
 
 
 ####   <a name="results-scores"></a> c) Score to compare the algorithms
-After generating some graphs, we also calculated some score to compare the algorithms with one number. We first tried the 
+After generating some graphs, we also calculated some scores to compare the algorithms with one number. We first tried the 
 accuracy but as this is a multiclass
 problem and if we calculate a one-vs.-all accuracy metric, we get unreliable results. In that case the values for the true
 negatives are far higher than all the others. So we always get good results.
@@ -348,21 +346,24 @@ Last we also had a look on the Execution Times for Training and testing of the a
 | NN           | 2:36 min | 0.20598s |
 | NN combined  | 2:38 min | 0.20813s |
 
+It can be seen that training and testing of the NN is a lot faster than for the SVM. This can be explained by the length 
+of the data set which is taken quadratic into account for calculating the SVM where as the NN has not been slowed down too
+much by more data.
 
 ## <a name="discussion"></a>7. Discussion and Outlook
-When it comes to the 0.904 scores returned by the best model, it can be said that this project was a success. The identification of different gestures if when only having one frame of a dynamic gesture as input works. Also, the combination of similar gestures proves to be quite effective. Not only does the model work, but we could also show a concrete use case where it can be applied (the breakout game).
+When it comes to the F1-score (0.904) returned by the best model, it can be said that this project was a success. The identification of different gestures when only having one frame of a dynamic gesture as input works. Also, the combination of similar gestures proves to be quite effective. Not only does the model work, but we could also show a concrete use case where it can be applied to, the breakout game.
 
 Still, some aspects could be improved or handled differently, if the project would be done again / would continue with more time. The most promising improvement to get better results would be the introduction to semi-supervised learning for the pre-processing part. Instead of using the collection of frames for each dynamic gesture under the label of this gesture to create training data for static gestures, it might be worth looking at each frame separately and deciding which static gesture might be displayed. By doing so, the packaging step after the pre-processing would be redundant and it might be possible to identify multiple different static gestures in one dynamic one.
 
-To do so, the frames could be pre-processed using mediapipe as described above, but instead of using the label of the dynamic gesture, the different gestures could be first clustered with k-mean, dbscan or any other clustering algorithm and afterwards labelled manually. To ensure a good output, the clustering step has to be evaluated by using a fitting score like the silhouette score or rand index. For the labelling, one or more people would have to look at each cluster and take a sample of maybe 5 to 15 images and give them a fitting label. Those clusters will then be used as classes for the training of the actual classification model, with the manual labels as target values. This process could take some time and effort since different numbers of clusters should be evaluated and the manual labelling part is very time-consuming by nature since a lot of discussions can be made of the correct label of a cluster. It might even be necessary to improve the preprocessing to ensure clusters that fit the human interpretation of similar gestures and not only the on of the clustering model.
+To do so, the frames could be pre-processed using mediapipe as described above, but instead of using the label of the dynamic gesture, the different gestures could be first clustered with k-mean, dbscan or any other clustering algorithm and afterwards labelled manually. To ensure a good output, the clustering step has to be evaluated by using a fitting score like the silhouette score or rand index. For the labelling, one or more people would have to look at each cluster and take a sample of maybe 5 to 15 images and give them a fitting label. Those clusters will then be used as classes for the training of the actual classification model, with the manual labels as target values. This process could take some time and effort since different numbers of clusters should be evaluated and the manual labelling part is very time-consuming by nature since a lot of discussions can be made of the correct label of a cluster. It might even be necessary to improve the preprocessing to ensure clusters that fit the human interpretation of similar gestures and not only the one of the clustering model.
 
-A second improvement that won't affect the result, but the time needed to achieve it, might be the improvement of the pre-processing pipeline by using paralyzation on the kubernetes cluster. This could be either done by using multiple pods for the task or using pyspark on one or more pods to divide one task into multiple ones. This improvement step might be not easy to achive since kubernetes and pyspark are known to have a quite steep learning curve for beginners. Nevertheless, this improvement could shorten the time needed for preprocessing and therefore leave more time for other steps that could have a positive influence on the model performance.
+A second improvement that would not affect the result, but the time needed to achieve it, might be the improvement of the pre-processing pipeline by using parallelization on the kubernetes cluster. This could be either done by using multiple pods for the task or using pyspark on one or more pods to divide one task into multiple ones. This improvement step might be not easy to achive since kubernetes and pyspark are known to have a quite steep learning curve for beginners. Nevertheless, this improvement could shorten the time needed for preprocessing and therefore leave more time for other steps that could have a positive influence on the model performance.
 
 Apart from the applying semi supervised learning in a future approach, we would also apply the gestures on other
 applications, like a small racing game or as control gestures of a smart home system.
-Further research should be also focus on tweaking the algorithms by having a closer look on the optimization of the 
+Further research should also focus on tweaking the algorithms by having a closer look on the optimization of the 
 hyperparameters. This could be done by using a cluster solution. The preprocessing was already done on a kubernetes cluster.
-Also, a gridsearch could be performed on such a computational cluster. The SVM algorithm doesn't leave many options on 
+Also, a gridsearch could be performed on such a computational cluster. The SVM algorithm does not leave many options on 
 enhancing it but for the NN there could be tried out several other configurations with more or other layers.
 It would be also a big gain for the applications if also multi hand models would be developed or more gestures would be 
 added to the training data set to expand the possible gestures to more than these 17 collections or 27 classes.
