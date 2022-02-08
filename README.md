@@ -25,7 +25,7 @@ Our aim was to implement a Hand Gesture Recognizer Model that adequately recogni
     2. [Confusion Matrices](#results-matrices)
     3. [Evaluation](#results-scores)
     4. [Execution Times](#results-execution-times)
-7. [Discussion](#discussion)
+7. [Discussion and Outlook](#discussion)
 8. [Conclusion](#conclusion)
 9. [References](#references)
 
@@ -50,37 +50,29 @@ you do with your hand, essentially. This is why for this project, our aim was no
 where the time component is an important factor, but to recognize hand signs and to correctly classify those. Therefore,
 we're looking at frames individually instead of factoring in the time and several frames at once.
 
-## <a name="theory"></a>2. Theory (Stefan)
-Stefan, ich habe dir das Thema hier mal gegeben, weil ich glaube, dass du am meisten in der Theorie drin steckst.
-Wir brauchen den Teil nicht so aufzublähen. Wir könnten hier ein bisschen auf bereits bestehende Lösungen eingehen.
-Außerdem haben wir hier etwas Platz, um beispielsweise die mediaPipe zu erklären. Dann brauchst du das unten nicht 
-mehr machen. - Matthias
-
+## <a name="theory"></a>2. Theory
 Recognizing hand gestures is a classic computer vision use case and can be used to tackle many different problems, all of which can be categorized under the topic "human-machine interaction" or HMI. Using visual input to interact with machines in a harsh environment (underwater or in loud areas) where voice or physical inputs are not possible or just using gestures to trigger a camera are potential use cases where gesture recognition can be applied.
 
 When talking about gesture recognition, the process from input to actual recognition can be divided into two subproblems:
-The identification of the hand itself
-The classification of the gesture that the hand is doing. This also includes the class "not a gesture" if the input does not match any previously learned patterns.
+- The identification of the hand itself
+- The classification of the gesture that the hand is doing. This also includes the class "not a gesture" if the input does not match any previously learned patterns.
 
-The solution in this repository makes use of the mediapipe library made by Google [[2]](#references-2), which is one of the most widely shared and re-usable libraries for media processing. This pre-trained solution already tackles the first subproblem (the identification of the hand(s) itself) with a pre-trained ml model. In addition to that, it is also possible to represent the hand not as a sum of pixel value, but as a collection of 21 landmarks that define the hand. The tip of the pinky finger represented by an X, Y and Z-coordinate is one example of those landmarks. The different values of the coordinates are estimated by another pre-trained model contained in the mediapipe library. 
+The solution in this repository makes use of the mediapipe library made by Google [[2]](#references-2), which is one of the most widely shared and re-usable libraries for media processing. This pre-trained solution already tackles the first subproblem (the identification of the hand(s) itself) with a pre-trained ml model. In addition to that, it is also possible to represent the hand not as a sum of pixel value, but as a collection of 21 landmarks that define the hand. The tip of the pinky finger represented by an X, Y and Z-coordinate is one example of those landmarks. The different values of the coordinates are estimated by another pre-trained model contained in the mediapipe library. You can see an overview of those landmarks in the image below.
+
+<p align="center">
+    <img src="figures/hand_landmarks.png" alt="Mediapipe Landmarks" width="450"/>
+</p>
 
 With the different hand landmarks as a database, it was possible to train a model to predict different hand gestures. The output was then used to interact hands-free with the classic atari breakout game as a showcase where this kind of solution can be applied.
 
-## <a name="dataset"></a>3. Data Set (Stefan)
-Stefan, ich habe dir auch gleich das Thema hier gegeben, weil du den Datensatz ja auch bearbeitet hast.
-Da ist es wahrscheinlich einfach, wenn du ein paar KeyFacts dazu nennst. Ich habe dir im Folgenden auch schon 
-ein paar Ideen für insights dazugeschrieben. Kannst du nutzen, musst du aber nicht. - Matthias
-
-some short explanations:
-- which data set did we use
-- where did it come from
-- how big is it / how is it presented (single frames of videos)
-- which properties (how many people/how many gestures/ how often shown)
-- show some of the frames
-
+## <a name="dataset"></a>3. Data Set
 The data used to train the final model(s) was provided by Alessandro Floris and his team, who introduced it in a paper called "A dynamic hand gesture recognition data set for human-computer interfaces" [[1]](#references-1).
 
-The data set consists of 27 classes where each class contains a different dynamic hand gesture. For each class, 21 different participants performed the gesture 3 three times in front of a white wall. All the participants have been trained in how to perform the specific gesture and wrongly executed footage has been excluded from the data set. Also, all the gestures were made from a perspective that would resemble a person sitting in front of a laptop camera.
+The data set consists of 27 classes where each class contains a different dynamic hand gesture. For each class, 21 different participants performed the gesture 3 three times in front of a white wall. All the participants have been trained in how to perform the specific gesture and wrongly executed footage has been excluded from the data set. Also, all the gestures were made from a perspective that would resemble a person sitting in front of a laptop camera. An example of one frame of one gesture can be seen below.
+
+<p align="center">
+    <img src="figures/class_01_static.PNG" alt="One frame from class_01" width="450"/>
+</p>
 
 This totals a collection of 1701 different videos (63 for each gesture and) stored as HD images in the png format for each frame. The roughly 245 GB of data is stored in multiple .zip files on the IEEE Data Port (on an underlying AWS S3 service).
 
@@ -99,14 +91,6 @@ Before even starting the actual preprocessing, a solution had to be found to dea
 As described above (see "Theory"), the library mediapipe was then used to detect and convert the single frames of a gesture (as grayscale image) to the coordinates of the different landmarks of the hand. More specifically the sum of pixel values is converted to 21 points described by an X, Y and Z value. This not only reduces the amount of data drastically but also gets rid of most of the noise in the original image (for example all the background data). 
 
 The resulting gestures are saved in the CSV format with one frame per row, described by the initial label of the gesture and 21 columns for each X coordinate of the 21 landmarks and corresponding 21 columns for the Y and Z coordinates. In total 127.000 rows are created.
-
-Apply the gesture model to the data --> Get the CSV-File with ~90k rows and 21 cols
-describe the pipeline:
-- download
-- media pipe
-- what else did you do, Stefan?
-
-Um die Übergänge sauber hinzubekommen, wäre es gut, wenn du als letztes die Struktur der CSV erklärst. - Matthias.
 
 ### <a name="splitting"></a>Splitting
 To properly train and test our gesture classifier models, we split our dataset:
@@ -172,40 +156,28 @@ Where have been the problems? What did we do differently according to the plan s
 In the following section we will go into our actual implementation and how this might have deviated from our original concepts
 we talked about in [section 4](#concept-and-design). Problems, measures for improvement and other aspects will be discussed as well. 
 
-### <a name="implementation-preprocessing"></a>Preprocessing (Stefan)
-1. PreProcessing
+### <a name="implementation-preprocessing"></a>Preprocessing 
 Mediapipe was used to detect the hand in a frame and extract specific landmarks from the gesture. Those landmarks are represented by 3D coordinates and are the database for the model.
 
 The values for the X and Y values are automatically scaled between 0 and 1 corresponding to the original size of the image. Therefore also the position of the landmark (and hand) is still included in the coordinates. For the Z coordinate, the mediapipe model calculates a value relative to the landmark of the bottom of the palm (which is therefore assigned the baseline value "0"). Possible values for Z range between very small numbers like 0.001 and bigger like 180 which makes them hard to work with, since the scale seems off. Further information on handling the initial scaling is in the following parts.
 
-2. Exclude non-existing rows
-Before continuing it is wise to get rid of the observations where mediapipe was not able to detect a hand or detected multiple hands. The according frames are not looked at further and are just skipped. 
+Before continuing it is wise to get rid of the observations where mediapipe was not able to detect a hand or detected multiple hands. The according frames are not looked at further and are just skipped.
 
-3. Scaling to simulate bounding boxes
 The automatic scaling of the mediapipe output for the X and Y coordinates is problematic for the use case, since it does not give the relative value of the landmarks to each other, but the value of the landmark in relation to the position in the image. In other words, the same gesture once done in the top right of a frame and once in the bottom left of another frame will result in drastically different coordinate values, even if both gestures are identical. The remove the noise of the positional difference, another scaling was applied.
 
 This second scaling of the data does not look at the whole image, but only at the extracted landmarks. More specifically at the X, Y and Z coordinates over all the landmarks of one frame separately. They are then scaled from values of 0 (for the smallest value) and 1 (for the biggest). This is one way of extracting the hand from the full image and is a simpler version of the related approach of using bounding boxes.
 
-One example for more clarity:
-Two separate frames have the same hand gesture, where a person once makes a thumbs-up gesture in the top left and once in the bottom right of an image. Even when both gestures are identical, the coordinates will very much differ, since the gesture in the top left will have X and Y values closer to one and the gesture in the bottom right closer to 0. Be rescaling the X values between the lowest X coordinate of all the landmarks in one frame (probably the tip of the thumb, since it is a thumbs-up gesture) and the highest X value (probably the bottom of the pinky / the pinky metacarpophalangeal) both frames will have the same values for each X coordinate. The position in the original frame is not important anymore. 
+One example for more clarity: Two separate frames have the same hand gesture, where a person once makes a thumbs-up gesture in the top left and once in the bottom right of an image. Even when both gestures are identical, the coordinates will very much differ, since the gesture in the top left will have X and Y values closer to one and the gesture in the bottom right closer to 0. Be rescaling the X values between the lowest X coordinate of all the landmarks in one frame (probably the tip of the thumb, since it is a thumbs-up gesture) and the highest X value (probably the bottom of the pinky / the pinky metacarpophalangeal) both frames will have the same values for each X coordinate. The position in the original frame is not important anymore.
 
-The same is done for the Y and Z coordinate.
-Criticism: It could be said that this method will distort the relations of the landmarks since it will be always scaled between 0 and 1 for each dimension separately. More specifically a hand gesture of a raised hand with fingertips sticking together and a gesture of a raised hand with fingers spread apart will result in the same coordinates after rescaling since the X values will always be between 0 and one for thump to pinky.
+The same is done for the Y and Z coordinate. Criticism: It could be said that this method will distort the relations of the landmarks since it will be always scaled between 0 and 1 for each dimension separately. More specifically a hand gesture of a raised hand with fingertips sticking together and a gesture of a raised hand with fingers spread apart will result in the same coordinates after rescaling since the X values will always be between 0 and one for thump to pinky.
 
-4. Combination of similar classes to one bigger class
-After a manual inspection of the different gestures, it was clear that some of them do not differ at all when looking at the single frames. With some gestures, it was even hard for the human inspector to separate a gif into one of two classes when looking at them. 
+After a manual inspection of the different gestures, it was clear that some of them do not differ at all when looking at the single frames. With some gestures, it was even hard for the human inspector to separate a gif into one of two classes when looking at them.
 
-To tackle this problem a selection of similar gestures (when only looking at the single frames) was created and given the same label. With this, the number of different classes was reduced from 27 to 17. It is important to mention that only classes with overall comparable frames (like waving from right to left, vs waving from left to right) have been combined. More complex gestures where only a part of the frames would fully match another class have not been added to a new collection. 
+To tackle this problem a selection of similar gestures (when only looking at the single frames) was created and given the same label. With this, the number of different classes was reduced from 27 to 17. It is important to mention that only classes with overall comparable frames (like waving from right to left, vs waving from left to right) have been combined. More complex gestures where only a part of the frames would fully match another class have not been added to a new collection.
 
-For further work on this task, it could be useful to (instead of a manual inspection) cluster the single frames by a clustering algorithm and then create new labels based on the insight of some samples of each cluster.
----> hier beispiel gifs einblenden
+For further work on this task, it could be useful to (instead of a manual inspection) cluster the single frames by a clustering algorithm and then create new labels based on the insight of some samples of each cluster. ---> hier beispiel gifs einblenden
 
-5. Storing data as CSV
-The resulting gestures are saved in the CSV format with one frame per row, described by the initial label of the gesture and 21 columns for each X coordinate of the 21 landmarks and corresponding 21 columns for the Y and Z coordinates. In total 127.000 rows are created.
-
-- something about the size of the data:
-- difficulties of storing them
-- usage of kubernetes cluster to preprocess
+The resulting gestures are saved in the CSV format with one frame per row as described in the "Design" part.
 
 ### <a name="implementation-model-fitting"></a>Model Fitting
 As mentioned earlier we decided on two different models for the gesture classification. After training the first models however,
@@ -293,7 +265,6 @@ While developing the game we discovered that combining the classes had also a go
 choosing several classes per direction, one for each direction was enough. This improved the game play as the speed
 of the game increased.
 
-
 ## <a name="results"></a>6. Results (Matthias)
 Different metrics were applied to get an overview how good the algorithms perform. First we did a PCA, then we generated the
 confusion matrices and calculated metrics from it and last we had a short look on the execution times.
@@ -377,19 +348,14 @@ Last we also had a look on the Execution Times for Training and testing of the a
 | NN combined  | 2:38 min | 0.20813s |
 
 
-## <a name="discussion"></a>7. Discussion (Stefan)
+## <a name="discussion"></a>7. Discussion and Outlook
+When it comes to the 0.904 scores returned by the best model, it can be said that this project was a success. The identification of different gestures if when only having one frame of a dynamic gesture as input works. Also, the combination of similar gestures proves to be quite effective. Not only does the model work, but we could also show a concrete use case where it can be applied (the breakout game).
 
-Did our plan work? Where have been the difficulties? What didn't work out? Did we reach the 
-overall goal to implement a game played with gestures?
+Still, some aspects could be improved or handled differently, if the project would be done again / would continue with more time. The most promising improvement to get better results would be the introduction to semi-supervised learning for the pre-processing part. Instead of using the collection of frames for each dynamic gesture under the label of this gesture to create training data for static gestures, it might be worth looking at each frame separately and deciding which static gesture might be displayed. By doing so, the packaging step after the pre-processing would be redundant and it might be possible to identify multiple different static gestures in one dynamic one.
 
+To do so, the frames could be pre-processed using mediapipe as described above, but instead of using the label of the dynamic gesture, the different gestures could be first clustered with k-mean, dbscan or any other clustering algorithm and afterwards labelled manually. To ensure a good output, the clustering step has to be evaluated by using a fitting score like the silhouette score or rand index. For the labelling, one or more people would have to look at each cluster and take a sample of maybe 5 to 15 images and give them a fitting label. Those clusters will then be used as classes for the training of the actual classification model, with the manual labels as target values. This process could take some time and effort since different numbers of clusters should be evaluated and the manual labelling part is very time-consuming by nature since a lot of discussions can be made of the correct label of a cluster. It might even be necessary to improve the preprocessing to ensure clusters that fit the human interpretation of similar gestures and not only the on of the clustering model.
 
--> overall prediction gut, nach Collection besser, einzelne Gesten können erkannt werden, aber Aufteilung nach Colection 
-nur manuell vielleicht mit -> something to semi supervised learning mit clustern
-
-usage of just one cluster and not done several kubernetes pods at the time
---> still worked out as it had to be done just once and the cluster did the media pipe 
-stuff in one night. Kubernetes configuration was more complicated than we thought.
-
+A second improvement that won't affect the result, but the time needed to achieve it, might be the improvement of the pre-processing pipeline by using paralyzation on the kubernetes cluster. This could be either done by using multiple pods for the task or using pyspark on one or more pods to divide one task into multiple ones. This improvement step might be not easy to achive since kubernetes and pyspark are known to have a quite steep learning curve for beginners. Nevertheless, this improvement could shorten the time needed for preprocessing and therefore leave more time for other steps that could have a positive influence on the model performance.
 
 Apart from the applying semi supervised learning in a future approach, we would also apply the gestures on other
 applications, like a small racing game or as control gestures of a smart home system.
@@ -399,7 +365,6 @@ Also, a gridsearch could be performed on such a computational cluster. The SVM a
 enhancing it but for the NN there could be tried out several other configurations with more or other layers.
 It would be also a big gain for the applications if also multi hand models would be developed or more gestures would be 
 added to the training data set to expand the possible gestures to more than these 17 collections or 27 classes.
-
 
 ## <a name="conclusion"></a>8. Conclusion
 This project shows a python implementation of two trained models to recognize and interpret 27 different hand gestures. 
