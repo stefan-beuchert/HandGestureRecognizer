@@ -236,7 +236,7 @@ the number of epochs to train with, the batch size (since we're training in batc
 where we used the Adam optimizer. For our loss function we used "Sparse Categorical Crossentropy" since this is a 
 classification problem and our labels were cast to integers. For the metric we used Accuracy.\
 After a certain number of epochs the training accuracy only increased slightly while the validation accuracy didn't and even got
-a little worse than before. Therefore we decided to stop after 150 epochs. For batch size we settled with a value of 128
+a little worse than before. Therefore, we decided to stop after 150 epochs. For batch size we settled with a value of 128
 and for the learning rate, after first using a rate around 0.01 we worked our way down to 0.001 as this yielded higher 
 accuracy scores as well. Furthermore, we also tried adding and removing additional layers and trying out a different number
 of nodes. Adding two to three more layers did give better results, however, after a certain number of layers the trade-off
@@ -256,24 +256,25 @@ Training Original | Training with Combined Classes |  Training with Dropout Laye
 
 
 #### <a name="implementation-svm"></a>2. Support Vector Machine (SVM) (Matthias)
-But we forgot that SVM has problems by fitting lots of data. Not cause of the results but caused by the calculation time. 
-It is not just taken linearly into account but quadratic. This caused computational times of over an hour per run. These times 
+But we forgot that SVM has problems by fitting lots of data. Not because of the results but caused by the calculation time. 
+the length of the dataset is not just taken linearly into account but quadratic. This caused computational times of over 
+an hour per run. These times 
 appeared to happen with a first demo data set containing fewer variables. So the computational times were reduced by taking
 the real dataset which had more dimensions and was therefore easier to process for the SVM and also by reassigning the class
 variables from strings to integers. This accelerated the whole training time from an hour down to just 5 Minutes.
-But also the long training times before haven't been a real problem. The development has been slowed down. 
-Fortunately, this algorithm doesn't have too many hyperparameters as NN for example. So there was not so much optimization needed.
+But also the long training times before have not been a real problem. The development has just been slowed down. 
+Fortunately, this algorithm does not have as many hyperparameters as NN for example. So there was not so much optimization needed.
 
 ### <a name="implementation-application"></a>Implement a small application to show the working system (Matthias)
 As said before, we needed the saved models especially for the game. Nobody wants to play it if the training of the NN or
 the SVM takes several minutes. For that reason we just import one model at the beginning of the game and use that for the
-predictions. This is then acceptable for the loading times of the game.
+predictions. The loading times have been reduced to be acceptable for the player.
 While developing the game we discovered that combining the classes had also a good effect on the game itself. Instead of 
 choosing several classes per direction, one for each direction was enough. This improved the game play as the speed
 of the game increased.
 
 ## <a name="results"></a>6. Results (Matthias)
-Different metrics were applied to get an overview how good the algorithms perform. First we did a PCA, then we generated the
+Different metrics were applied to get an overview how good the algorithms perform. First, we did a PCA, then we generated the
 confusion matrices and calculated metrics from it and last we had a short look on the execution times.
 
 #### <a name="results-pca"></a>  a) PCA for first impression
