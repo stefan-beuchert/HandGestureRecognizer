@@ -173,27 +173,24 @@ The same is done for the Y and Z coordinate. Criticism: It could be said that th
 
 After a manual inspection of the different gestures, it was clear that some of them do not differ at all when looking at the single frames. With some gestures, it was even hard for the human inspector to separate a gif into one of two classes when looking at them.
 
-To tackle this problem a selection of similar gestures (when only looking at the single frames) was created and given the same label. With this, the number of different classes was reduced from 27 to 17. It is important to mention that only classes with overall comparable frames (like waving from right to left, vs waving from left to right) have been combined. More complex gestures where only a part of the frames would fully match another class have not been added to a new collection.
+To tackle this problem a selection of similar gestures (when only looking at the single frames) was created and given the same label. With this, the number of different classes was reduced from 27 to 17. It is important to mention that only classes with overall comparable frames (like waving from right to left, vs waving from left to right) have been combined. More complex gestures where only a part of the frames would fully match another class have not been added to a new collection. An overview of the very similar example classes 20 and 21, as well as the combination schema for the new collections can be seen beneath. 
 
-For further work on this task, it could be useful to (instead of a manual inspection) cluster the single frames by a clustering algorithm and then create new labels based on the insight of some samples of each cluster. ---> hier beispiel gifs einblenden
-
-The resulting gestures are saved in the CSV format with one frame per row as described in the "Design" part.
-
-### <a name="implementation-model-fitting"></a>Model Fitting
-As mentioned earlier we decided on two different models for the gesture classification. After training the first models however,
-we noticed that the multi-class classification could be improved: \
+<!-- 
 Since we have many classes, 27 to be precise, the number of cases where our prediction is equal to our true label is smaller when
 we have more classes. This leads to fewer True Positives (TPs) and therefore lower evaluation scores regarding our accuracy.
 Another problem was that many of our gestures were quite similar to each other, e.g. when looking at class 20 and 21 at first glance
 there is visually almost no difference. This is another challenge that our models had to face during training.
+--> 
 
 | Gesture Class 20 | Gesture Class 21 |
 |--------------|----------------------|
 ![Gesture Class 20](figures/class_20.gif) | ![Gesture Class 21](figures/class_21.gif)
 
+<!-- 
 For what we were trying to achieve, correctly distinguishing between gestures that are that similar wasn't necessary. To get
 a better classifier we then examined the data and the classes manually and decided to combine several classes into one, e.g.
 gesture classes 1, 2 and 3 became one class. More details can be found in the following table:
+--> 
 
 | New class... | ... consists of the old classes: |
 |--------------|----------------------------------|
@@ -215,8 +212,18 @@ gesture classes 1, 2 and 3 became one class. More details can be found in the fo
 | Class 26     | 26                               |
 | Class 27     | 27                               |
 
+<!-- 
 After combining several classes we were left with 17 distinct labels: We reduced the number of total classes and combined
 similar ones which then should lead to better classification results.
+-->
+
+For further work on this task, it could be useful to (instead of a manual inspection) cluster the single frames by a clustering algorithm and then create new labels based on the insight of some samples of each cluster.
+
+The resulting gestures are saved in the CSV format with one frame per row as described in the "Design" part.
+
+### <a name="implementation-model-fitting"></a>Model Fitting
+As mentioned earlier we decided on two different models for the gesture classification. After training the first models however,
+we noticed that the multi-class classification could be improved: \
 
 After training our models we saved them into the [models folder](models/) so we can easily retrieve and use them for 
 our evaluation and for the implementation in our application to quickly show the working system.
