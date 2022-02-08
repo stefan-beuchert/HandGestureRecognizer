@@ -63,7 +63,7 @@ The solution in this repository makes use of the mediapipe library made by Googl
     <img src="figures/hand_landmarks.png" alt="Mediapipe Landmarks" width="450"/>
 </p>
 
-With the different hand landmarks as a database, it was possible to train a model to predict different hand gestures. The output was then used to interact hands-free with the classic atari breakout game as a showcase where this kind of solution can be applied to.
+With the different hand landmarks as a database, it was possible to train a model to predict different hand gestures. The output was then used to interact with the classic atari breakout game without physically using our hands as a showcase where this kind of solution can be applied to.
 
 ## <a name="dataset"></a>3. Data Set
 The data used to train the final model(s) was provided by Alessandro Floris and his team, who introduced it in a paper called "A dynamic hand gesture recognition data set for human-computer interfaces" [[1]](#references-1).
@@ -143,7 +143,7 @@ Furthermore, SVMs can be quite slow if you have too many training samples.
 ### <a name="concept-design-application"></a>Implement a small application to show the working system
 To test our model in the real world we decided to apply the better model on a small game. 
 A break-out game seemed to be good for this. There are just two possible moves for the bar: go to the left or go to the right.
-Hence there are also just two gestures needed to control the game. The whole pipeline should be kept easy and is orientated 
+Hence there are also just two gestures needed to control the game. The whole pipeline should be kept easy and is oriented 
 on the steps seen above. The camera should take a picture. As within the preprocessing part, the image is analysed by the
 mediapipe and the coordinates are then passed to the forward-path of the NN or the SVM to take a prediction of the assumed
 class. According to the prediction the bar is then moved to the right or left as long as the gesture is seen. If the image
@@ -221,7 +221,7 @@ The resulting gestures are saved in the CSV format with one frame per row as des
 
 ### <a name="implementation-model-fitting"></a>Model Fitting
 As mentioned earlier we decided on two different models for the gesture classification. After training the first models however,
-we noticed that the multi-class classification could be improved: \
+we noticed that the multi-class classification could be improved:
 
 After training our models we saved them into the [models folder](models/) so we can easily retrieve and use them for 
 our evaluation and for the implementation in our application to quickly show the working system.
@@ -246,7 +246,7 @@ We also tried adding dropout layers to prevent overfitting. But since our model 
 for the model with the dropout layers were not good, we decided to not further follow that approach.
 
 The graphs for our final network trainings can be seen below. The training for the NN that is based on the combined classes 
-approach looks very similar to the original one, only the accuracy values are lower.
+approach looks very similar to the original one, only the accuracy values for the former are higher.
 
 Training Original | Training with Combined Classes |  Training with Dropout Layers
 :-------------------------:|:-------------------------:|:-------------------------:
@@ -254,29 +254,29 @@ Training Original | Training with Combined Classes |  Training with Dropout Laye
 
 
 #### <a name="implementation-svm"></a>2. Support Vector Machine (SVM)
-But we forgot that SVM has problems by fitting lots of data. Not because of the results but caused by the calculation time. 
-the length of the dataset is not just taken linearly into account but quadratic. This caused computational times of over 
+As mentioned earlier SVM has problems when fitting lots of data. Not because of the results but caused by the calculation time: 
+The length of the dataset is not just taken linearly into account but quadratic. This caused computational times of over 
 an hour per run. These times 
 appeared to happen with a first demo data set containing fewer variables. So the computational times were reduced by taking
 the real dataset which had more dimensions and was therefore easier to process for the SVM and also by reassigning the class
-variables from strings to integers. This accelerated the whole training time from an hour down to just 5 Minutes.
-But also the long training times before have not been a real problem. The development has just been slowed down. 
+variables from strings to integers. This accelerated the whole training time from an hour down to just 5 minutes.
+But also the long training times before have not been a real problem, the development had just been slowed down. 
 Fortunately, this algorithm does not have as many hyperparameters as NN for example. So there was not so much optimization needed.
 
 ### <a name="implementation-application"></a>Implement a small application to show the working system
 As said before, we needed the saved models especially for the game. Nobody wants to play it if the training of the NN or
-the SVM takes several minutes. For that reason we just import one model at the beginning of the game and use that for the
+the SVM takes several minutes. For that reason we just imported one model at the beginning of the game and used that for the
 predictions. The loading times have been reduced to be acceptable for the player.
 While developing the game we discovered that combining the classes had also a good effect on the game itself. Instead of 
 choosing several classes per direction, one for each direction was enough. This improved the game play as the speed
 of the game increased.
 
 ## <a name="results"></a>6. Results
-Different metrics were applied to get an overview how good the algorithms perform. First, we did a PCA, then we generated the
-confusion matrices and calculated metrics from it and last we had a short look on the execution times.
+Different metrics were applied to get an overview how good the algorithms perform. First, we did a Principal Component Analysis (PCA), 
+then we generated the confusion matrices and calculated metrics from it and lastly, we had a short look on the execution times.
 
-#### <a name="results-pca"></a>  a) PCA for first impression
-For a first impression on the data we did a principal component analysis to have a look if there are already classes
+#### <a name="results-pca"></a>  a) First impression - PCA
+For a first impression on the data we did a PCA to have a look if there are already classes
 which could be easily separated.
 
 ![PCA](https://github.com/stefan-beuchert/HandGestureRecognizer/blob/main/figures/PCA.png)
@@ -288,17 +288,17 @@ But one can see that some clusters of classes are formed. And just few classes a
 The combination of these formed clusters by just explaining 50% of the variance gives some hope that a good separation of 
 the data with more dimensions being involved is possible.
 
-#### <a name="results-matrices"></a>  b) Confusion matrix to find similar gestures
+#### <a name="results-matrices"></a>  b) Confusion matrices to find similar gestures
 To get a good impression on how well the algorithms perform for the different classes we generated the confusion matrices.
 Values on the diagonal should be high as they mean "The algorithm predicted a given input vector as belonging to the class
 and it actually belonged to the class". On the opposite, values in the rest of the matrix should be low as these mean "Given a vector
-the prediction was wrong". The colors are according to it. 
+the prediction was wrong". The colors are set accordingly. 
 
 ![Conf_matrix_svm](https://github.com/stefan-beuchert/HandGestureRecognizer/blob/main/figures/svm_heatmap_27.png)
-In the figure above, one can see clearly several clusters of classes where the SVM algorithm mispredicted some gestures.
+In the figure above, one can clearly see several clusters of classes where the SVM algorithm mispredicted some gestures.
 For example, the classes one to three or the classes 20 and 21 form this kind of clusters. This plot was the basis of our
 manual collections of classes as mentioned above. But in general, it can be stated that there are also classes which can be 
-classified quite precisely as classes 24 and 25.
+classified quite precisely, e.g. classes 24 and 25.
 
 ![Conf_matrix_svm_combined](https://github.com/stefan-beuchert/HandGestureRecognizer/blob/main/figures/svm_heatmap_combined.png)
 In the version where the SVM algorithm was run on the combined classes, one can see that some classes could be classified
@@ -308,7 +308,7 @@ even further like the collections one and two.
 ![Conf_matrix_nn](https://github.com/stefan-beuchert/HandGestureRecognizer/blob/main/figures/NN_heatmap_27.png)
 For the NN confusion matrix a similar figure is shown. It also shows the same clusters of classes which should be combined to 
 collections. But in comparison to the first figure, it can be easily stated that the overall classification is better as
-there are lot less misclassified predictions compared to the SVM. So the NN performs better on this task and this accords
+there are a lot less misclassified predictions compared to the SVM. So the NN performs better on this task and this accords
 to our results above.
 
 ![Conf_matrix_nn_combined](https://github.com/stefan-beuchert/HandGestureRecognizer/blob/main/figures/NN_heatmap_combined.png)
@@ -322,14 +322,15 @@ make our results more reliable. We would have been surprised if the algorithms s
 they support each other.
 
 
-####   <a name="results-scores"></a> c) Score to compare the algorithms
+####   <a name="results-scores"></a> c) Evaluation Scores
 After generating some graphs, we also calculated some scores to compare the algorithms with one number. We first tried the 
 accuracy but as this is a multiclass
 problem and if we calculate a one-vs.-all accuracy metric, we get unreliable results. In that case the values for the true
 negatives are far higher than all the others. So we always get good results.
 
-Instead we decided to use the F1-Score. This metric can also be used for imbalanced data sets and multiclass classification
-as we did. Now we got more different values for the algorithms. They are shown below.
+Instead we decided to use the F1-Score: It factors in Precision and Recall, so it is a balanced measure between those two.
+The F1-Score is also more sensitive to data distribution, so this metric can also be used for imbalanced data sets and 
+multiclass classification as we did. Now we got more different values for the algorithms. They are shown in the table below.
 
 | Algorithm    | Accuracy | F1-Score |
 |--------------|----------|----------|
@@ -343,8 +344,8 @@ time we are not surprised that classes which we combined manually by looking on 
 after combining.
 
 
-####  <a name="results-execution-times"></a>  d) Execution times to calculate the necessary ressources
-Last we also had a look on the Execution Times for Training and testing of the algorithms:
+####  <a name="results-execution-times"></a>  d) Execution Times
+Lastly, we also had a look on the Execution Times for the training and testing of the algorithms:
 
 | Algorithm    | Training | Testing  |
 |--------------|----------|----------|
@@ -354,7 +355,7 @@ Last we also had a look on the Execution Times for Training and testing of the a
 | NN combined  | 2:38 min | 0.20813s |
 
 It can be seen that training and testing of the NN is a lot faster than for the SVM. This can be explained by the length 
-of the data set which is taken quadratic into account for calculating the SVM where as the NN has not been slowed down too
+of the data set which is taken quadratically into account for calculating the SVM whereas the NN has not been slowed down too
 much by more data.
 
 ## <a name="discussion"></a>7. Discussion and Outlook
@@ -362,17 +363,17 @@ When it comes to the F1-score (0.904) returned by the best model, it can be said
 
 Still, some aspects could be improved or handled differently, if the project would be done again / would continue with more time. The most promising improvement to get better results would be the introduction to semi-supervised learning for the pre-processing part. Instead of using the collection of frames for each dynamic gesture under the label of this gesture to create training data for static gestures, it might be worth looking at each frame separately and deciding which static gesture might be displayed. By doing so, the packaging step after the pre-processing would be redundant and it might be possible to identify multiple different static gestures in one dynamic one.
 
-To do so, the frames could be pre-processed using mediapipe as described above, but instead of using the label of the dynamic gesture, the different gestures could be first clustered with k-mean, dbscan or any other clustering algorithm and afterwards labelled manually. To ensure a good output, the clustering step has to be evaluated by using a fitting score like the silhouette score or rand index. For the labelling, one or more people would have to look at each cluster and take a sample of maybe 5 to 15 images and give them a fitting label. Those clusters will then be used as classes for the training of the actual classification model, with the manual labels as target values. This process could take some time and effort since different numbers of clusters should be evaluated and the manual labelling part is very time-consuming by nature since a lot of discussions can be made of the correct label of a cluster. It might even be necessary to improve the preprocessing to ensure clusters that fit the human interpretation of similar gestures and not only the one of the clustering model.
+To do so, the frames could be pre-processed using mediapipe as described above, but instead of using the label of the dynamic gesture, the different gestures could be first clustered with k-means, dbscan or any other clustering algorithm and afterwards labelled manually. To ensure a good output, the clustering step has to be evaluated by using a fitting score like the silhouette score or rand index. For the labelling, one or more people would have to look at each cluster and take a sample of maybe 5 to 15 images and give them a fitting label. Those clusters will then be used as classes for the training of the actual classification model, with the manual labels as target values. This process could take some time and effort since different numbers of clusters should be evaluated and the manual labelling part is very time-consuming by nature since a lot of discussions can be made of the correct label of a cluster. It might even be necessary to improve the preprocessing to ensure clusters that fit the human interpretation of similar gestures and not only the one of the clustering model.
 
-A second improvement that would not affect the result, but the time needed to achieve it, might be the improvement of the pre-processing pipeline by using parallelization on the kubernetes cluster. This could be either done by using multiple pods for the task or using pyspark on one or more pods to divide one task into multiple ones. This improvement step might be not easy to achive since kubernetes and pyspark are known to have a quite steep learning curve for beginners. Nevertheless, this improvement could shorten the time needed for preprocessing and therefore leave more time for other steps that could have a positive influence on the model performance.
+A second improvement that would not affect the result, but the time needed to achieve it, might be the improvement of the pre-processing pipeline by using parallelization on the Kubernetes cluster. This could be either done by using multiple pods for the task or using pyspark on one or more pods to divide one task into multiple ones. This improvement step might not be easy to achieve since Kubernetes and Pyspark are known to have a quite steep learning curve for beginners. Nevertheless, this improvement could shorten the time needed for preprocessing and therefore leave more time for other steps that could have a positive influence on the model performance.
 
-Apart from the applying semi supervised learning in a future approach, we would also apply the gestures on other
+Apart from the applying semi-supervised learning in a future approach, we would also apply the gestures on other
 applications, like a small racing game or as control gestures of a smart home system.
 Further research should also focus on tweaking the algorithms by having a closer look on the optimization of the 
-hyperparameters. This could be done by using a cluster solution. The preprocessing was already done on a kubernetes cluster.
+hyperparameters. This could be done by using a cluster solution. The preprocessing was already done on a Kubernetes cluster.
 Also, a gridsearch could be performed on such a computational cluster. The SVM algorithm does not leave many options on 
-enhancing it but for the NN there could be tried out several other configurations with more or other layers.
-It would be also a big gain for the applications if also multi hand models would be developed or more gestures would be 
+enhancing it but for the NN there are several other configurations e.g. with more or other layers that could be tried out.
+It would furthermore be a big gain for the applications if multi-hand models would be developed or more gestures would be 
 added to the training data set to expand the possible gestures to more than these 17 collections or 27 classes.
 
 ## <a name="conclusion"></a>8. Conclusion
@@ -380,7 +381,7 @@ This project shows a python implementation of two trained models to recognize an
 To raise the reliability of the models, classes which show similar gestures were combined into collections. 
 The performance of the models were then demonstrated in a simple breakout game by using gestures to control the bar. 
 
-## <a name="references"></a>References
+## <a name="references"></a>9. References
 
 <a name="references-1"></a>[1]	Floris, A. (2021, September 9). Dataset for Dynamic Hand Gesture Recognition Systems. IEEE DataPort. 
 	Retrieved February 05, 2022, from https://ieee-dataport.org/documents/dataset-dynamic-hand-gesture-recognition-systems 
