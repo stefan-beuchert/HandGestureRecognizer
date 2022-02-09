@@ -381,7 +381,7 @@ This project shows a python implementation of two trained models to recognize an
 To raise the reliability of the models, classes which show similar gestures were combined into collections. 
 The performance of the models were then demonstrated in a simple breakout game by using gestures to control the bar. 
 
-![Demo](figures/Demo.gif)
+![Demo](https://github.com/stefan-beuchert/HandGestureRecognizer/blob/main/figures/demo.gif)
 
 ## <a name="references"></a>9. References
 
