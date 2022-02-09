@@ -381,6 +381,8 @@ This project shows a python implementation of two trained models to recognize an
 To raise the reliability of the models, classes which show similar gestures were combined into collections. 
 The performance of the models were then demonstrated in a simple breakout game by using gestures to control the bar. 
 
+![Demo](figures/Demo.gif)
+
 ## <a name="references"></a>9. References
 
 <a name="references-1"></a>[1]	Floris, A. (2021, September 9). Dataset for Dynamic Hand Gesture Recognition Systems. IEEE DataPort. 
