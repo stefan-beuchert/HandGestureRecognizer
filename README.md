@@ -266,7 +266,9 @@ Fortunately, this algorithm does not have as many hyperparameters as NN for exam
 ### <a name="implementation-application"></a>Implement a small application to show the working system
 As said before, we needed the saved models especially for the game. Nobody wants to play it if the training of the NN or
 the SVM takes several minutes. For that reason we just imported one model at the beginning of the game and used that for the
-predictions. The loading times have been reduced to be acceptable for the player.
+predictions. The loading times have been reduced to be acceptable for the player. \
+For the breakout game itself we decided to use an already existing implementation, a breakout game written in Python by John Cheetham [[5]](#references-5).
+We used the code out-of-the-box from this Repository and adapted it according to our inputs and models, see the [breakout](src/breakout.py) file. \
 While developing the game we discovered that combining the classes had also a good effect on the game itself. Instead of 
 choosing several classes per direction, one for each direction was enough. This improved the game play as the speed
 of the game increased.
@@ -393,5 +395,7 @@ The performance of the models were then demonstrated in a simple breakout game b
 <a name="references-3"></a>[3] Sung, G. & Sokal, K. & Uboweja, E. & Bazarevsky, V. & Baccash, J. & Bazavan, E. & Chang, C. & Grundmann, M. (2021). 
     On-device Real-time Hand Gesture Recognition. Google Research. https://arxiv.org/pdf/2111.00038.pdf
 
-<a name="references-4"></a>[4] Hardesty, L. (2017). Explained: Neural Networks - Ballyhooed Artificial-Intelligence Technique Known as ‘Deep Learning’ Revives 70-Year-Old Idea. MIT News Office. 
+<a name="references-4"></a>[4] Hardesty, L. (2017). Explained: Neural Networks - Ballyhooed Artificial-Intelligence Technique Known as ‘Deep Learning’ Revives 70-Year-Old Idea. MIT News Office. Retrieved February 06, 2022, from
     https://news.mit.edu/2017/explained-neural-networks-deep-learning-0414
+    
+<a name="references-5"></a>[5] Cheetham, J. (2009). Breakout. Retrieved February 08, 2022, from https://github.com/johncheetham/breakout
